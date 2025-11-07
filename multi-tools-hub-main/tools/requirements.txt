@@ -1,0 +1,24 @@
+# Main framework
+Flask==2.3.2
+gunicorn==21.2.0
+
+# For cross-origin (CORS)
+flask-cors
+
+# For making HTTP requests
+requests
+
+# Audio / Video Tools (Audio Cutter)
+ffmpeg-python
+moviepy
+numpy
+
+# Image Tools (Compressor, Converter, BG Remover)
+pillow
+rembg
+
+# Extra utility libraries (safe to keep)
+itsdangerous
+Jinja2
+Werkzeug
+MarkupSafe

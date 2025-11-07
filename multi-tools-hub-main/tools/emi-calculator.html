@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMI Calculator | MultiToolsHub</title>
+<meta name="description" content="Free EMI Calculator — calculate your monthly EMI, total interest, and payment schedule. Download reports as PDF, PNG, or CSV.">
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+:root {
+  --bg-dark: #0b1128;
+  --card-dark: #171d3f;
+  --text-dark: #ffffff;
+  --accent: #ffb400;
+  --teal: #0ea5a3;
+}
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  padding: 20px;
+}
+.container {
+  max-width: 450px;
+  margin: 0 auto;
+  background: var(--card-dark);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+}
+h1 {
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: 15px;
+}
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-top: 5px;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-size: 15px;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.btn-calc { background: var(--accent); color: #000; }
+.btn-download { background: var(--teal); color: #fff; margin: 5px; }
+.result {
+  margin-top: 20px;
+  border-radius: 12px;
+  padding: 15px;
+  background: rgba(255,255,255,0.05);
+}
+canvas { margin-top: 10px; border-radius: 10px; }
+.ad-slot {
+  border: 1px dashed #777;
+  margin: 25px auto;
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="ad-slot">[Top Ad Placement]</div>
+
+<div class="container" id="emiBox">
+  <h1>EMI Calculator</h1>
+
+  <label>Loan Amount (₹)</label>
+  <input type="number" id="loan" placeholder="e.g. 500000">
+
+  <label>Annual Interest Rate (%)</label>
+  <input type="number" id="rate" placeholder="e.g. 10">
+
+  <label>Loan Tenure (Years)</label>
+  <input type="number" id="years" placeholder="e.g. 5">
+
+  <button class="btn-calc" onclick="calculateEMI()">Calculate</button>
+
+  <div class="result" id="result" style="display:none;">
+    <h3>Result:</h3>
+    <p id="emi"></p>
+    <p id="totalInterest"></p>
+    <p id="totalPayment"></p>
+
+    <canvas id="pieChart" width="300" height="200"></canvas>
+
+    <div id="downloadBtns" style="display:none;text-align:center;">
+      <button class="btn-download" onclick="downloadResult('png')">Download PNG</button>
+      <button class="btn-download" onclick="downloadResult('jpg')">Download JPG</button>
+      <button class="btn-download" onclick="downloadPDF()">Download PDF</button>
+      <button class="btn-download" onclick="downloadCSV()">Export CSV</button>
+    </div>
+  </div>
+</div>
+
+<div class="ad-slot">[Bottom Ad Placement]</div>
+
+<script>
+let pieChart;
+
+function calculateEMI() {
+  const P = parseFloat(document.getElementById("loan").value);
+  const annualRate = parseFloat(document.getElementById("rate").value);
+  const years = parseFloat(document.getElementById("years").value);
+
+  if (isNaN(P) || isNaN(annualRate) || isNaN(years)) {
+    alert("Please fill all fields correctly!");
+    return;
+  }
+
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  const EMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  const totalPayment = EMI * n;
+  const totalInterest = totalPayment - P;
+
+  document.getElementById("emi").innerText = `Monthly EMI: ₹${EMI.toFixed(2).toLocaleString()}`;
+  document.getElementById("totalInterest").innerText = `Total Interest: ₹${totalInterest.toFixed(2).toLocaleString()}`;
+  document.getElementById("totalPayment").innerText = `Total Payment: ₹${totalPayment.toFixed(2).toLocaleString()}`;
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("downloadBtns").style.display = "block";
+
+  drawPie(P, totalInterest);
+}
+
+function drawPie(principal, interest) {
+  if (pieChart) pieChart.destroy();
+  const ctx = document.getElementById("pieChart").getContext("2d");
+  pieChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["Principal", "Interest"],
+      datasets: [{
+        data: [principal, interest],
+        backgroundColor: ["#ffb400", "#0ea5a3"]
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { labels: { color: "#fff" } }
+      }
+    }
+  });
+}
+
+function downloadResult(type) {
+  html2canvas(document.getElementById("emiBox"), { scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.href = type === "jpg" ? canvas.toDataURL("image/jpeg", 0.9) : canvas.toDataURL("image/png");
+    link.download = type === "jpg" ? "emi-result.jpg" : "emi-result.png";
+    link.click();
+  });
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const el = document.getElementById("emiBox");
+  const canvas = await html2canvas(el, { scale: 2 });
+  const img = canvas.toDataURL("image/png");
+  pdf.addImage(img, "PNG", 10, 20, 180, 0);
+  pdf.save("emi-report.pdf");
+}
+
+function downloadCSV() {
+  const P = parseFloat(document.getElementById("loan").value);
+  const annualRate = parseFloat(document.getElementById("rate").value);
+  const years = parseFloat(document.getElementById("years").value);
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  const EMI = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+  let balance = P, csv = "Month,Principal,Interest,Balance\n";
+  for (let i = 1; i <= n; i++) {
+    const interest = balance * r;
+    const principal = EMI - interest;
+    balance -= principal;
+    csv += `${i},${principal.toFixed(2)},${interest.toFixed(2)},${Math.max(0,balance).toFixed(2)}\n`;
+  }
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "emi-schedule.csv";
+  link.click();
+}
+</script>
+</body>
+</html>
+g

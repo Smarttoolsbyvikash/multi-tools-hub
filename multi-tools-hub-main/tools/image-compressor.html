@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image Compressor — Earn with Ads</title>
+<style>
+:root {
+  --bg: #0E121C;
+  --panel: #252842;
+  --accent: #FFD700;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, var(--bg), #1E2030);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px 15px;
+  min-height: 100vh;
+}
+.container {
+  width: 100%;
+  max-width: 900px;
+}
+h1 {
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.panel {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+.ad-box {
+  background: rgba(255,215,0,0.08);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 10px;
+  margin: 15px 0;
+  text-align: center;
+  padding: 10px;
+}
+.ad-box p {
+  color: var(--accent);
+  margin: 5px 0;
+}
+.ad-frame {
+  width: 100%;
+  height: 90px;
+  border: none;
+  border-radius: 8px;
+}
+#dropArea {
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+#dropArea.hover { border-color: #E6C200; }
+input[type="file"] { display: none; }
+.controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+select, input, button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+}
+button {
+  background: var(--accent);
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+.preview-area {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+.preview {
+  background: #1E2130;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.preview img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.download-btn {
+  display: block;
+  margin-top: 8px;
+  padding: 6px;
+  background: var(--accent);
+  color: #000;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Advanced Image Compressor (Adsense Earning Version)</h1>
+  <div class="panel">
+
+    <!-- 🔶 Top Ad -->
+    <div class="ad-box">
+      <p>Advertisement</p>
+      <!-- ✅ Paste your AdSense code here -->
+      <iframe class="ad-frame" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;background:#1E2030;color:#FFD700;'>Your Ad Here (728x90)</div>"></iframe>
+    </div>
+
+    <div id="dropArea">Drag & Drop Images Here or Click to Upload</div>
+    <input type="file" id="imageInput" accept="image/*" multiple>
+
+    <div class="controls">
+      <label>Format:
+        <select id="format">
+          <option value="jpeg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </label>
+
+      <label>Quality (0.1 - 1):
+        <input type="number" id="quality" min="0.1" max="1" step="0.1" value="0.8">
+      </label>
+
+      <button id="compressBtn">Compress Images</button>
+    </div>
+
+    <!-- 🟢 Middle Ad -->
+    <div class="ad-box">
+      <p>Sponsored</p>
+      <iframe class="ad-frame" style="height:250px;" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;background:#1E2030;color:#FFD700;'>Your Ad Here (300x250)</div>"></iframe>
+    </div>
+
+    <div class="preview-area" id="previewArea"></div>
+
+    <!-- 🔷 Bottom Ad -->
+    <div class="ad-box">
+      <p>Advertisement</p>
+      <iframe class="ad-frame" srcdoc="<div style='display:flex;align-items:center;justify-content:center;height:100%;background:#1E2030;color:#FFD700;'>Your Ad Here (728x90)</div>"></iframe>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const dropArea = document.getElementById('dropArea');
+const imageInput = document.getElementById('imageInput');
+const compressBtn = document.getElementById('compressBtn');
+const previewArea = document.getElementById('previewArea');
+let images = [];
+
+['dragenter','dragover','dragleave','drop'].forEach(event => {
+  dropArea.addEventListener(event, e => {
+    e.preventDefault(); e.stopPropagation();
+  });
+});
+dropArea.addEventListener('dragover', ()=>dropArea.classList.add('hover'));
+dropArea.addEventListener('dragleave', ()=>dropArea.classList.remove('hover'));
+dropArea.addEventListener('drop', e=>{
+  dropArea.classList.remove('hover');
+  handleFiles(e.dataTransfer.files);
+});
+dropArea.addEventListener('click', ()=> imageInput.click());
+imageInput.addEventListener('change', ()=> handleFiles(imageInput.files));
+
+function handleFiles(files){
+  images = Array.from(files);
+  previewArea.innerHTML = images.map(f=>`<div class='preview'><p>${f.name}</p></div>`).join('');
+}
+
+compressBtn.addEventListener('click', ()=>{
+  if(images.length===0) return alert("Upload at least one image.");
+  previewArea.innerHTML = "Compressing...";
+  const quality = parseFloat(document.getElementById('quality').value);
+  const format = document.getElementById('format').value;
+
+  previewArea.innerHTML = '';
+  images.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        canvas.toBlob(blob=>{
+          const url = URL.createObjectURL(blob);
+          const div = document.createElement('div');
+          div.className = 'preview';
+          div.innerHTML = `
+            <img src="${url}" alt="">
+            <a class="download-btn" href="${url}" download="compressed_${file.name}">Download</a>
+          `;
+          previewArea.appendChild(div);
+        }, 'image/' + format, quality);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+});
+</script>
+</body>
+</html>

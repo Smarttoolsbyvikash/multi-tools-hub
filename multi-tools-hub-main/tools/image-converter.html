@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Image Converter Pro+ — NextGen v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  :root{
+    --bg:#07101a; --panel:#0f1b2b; --muted:#9aa6b8; --accent:#f0b500; --card:#0e1622;
+    --glass: rgba(255,255,255,0.02);
+    font-family: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:linear-gradient(180deg,#07101a,#081426);color:#eaf3ff;padding:20px}
+  .wrap{max-width:1180px;margin:0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  header h1{color:var(--accent);margin:0;font-size:22px}
+  header p{margin:0;color:var(--muted);font-size:13px}
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:18px}
+  nav{padding:12px}
+  .nav-section{padding:10px 12px;border-radius:8px;color:var(--muted);margin-bottom:8px}
+  .nav-section.active{background:linear-gradient(90deg, rgba(240,181,0,0.05), rgba(240,181,0,0.01));border:1px solid rgba(240,181,0,0.06);color:#fff}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);min-height:560px}
+  .ad{border-radius:8px;padding:10px;border:1px dashed rgba(255,255,255,0.03);color:var(--muted);text-align:center;margin-top:8px}
+  .top-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  select,input[type="number"],input[type="range"]{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted)}
+  .btn{background:var(--accent);color:#071122;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+  .dropzone{border-radius:10px;border:2px dashed rgba(255,255,255,0.04);padding:26px;text-align:center;color:var(--muted);min-height:160px;transition:all .12s}
+  .dropzone.drag{background:rgba(240,181,0,0.03);border-color:rgba(240,181,0,0.18);color:#fff}
+  .controls-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .thumbs{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .thumb{width:150px;background:var(--card);border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.03);text-align:center}
+  .thumb img{width:100%;height:100px;object-fit:cover;border-radius:6px}
+  .thumb .name{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thumb .small{font-size:11px;color:var(--muted);margin-top:6px}
+  .progress-wrap{margin-top:14px}
+  .progress{height:10px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#ffd76b);transition:width .2s ease}
+  .status{margin-top:8px;color:var(--muted);font-size:13px}
+  /* before-after slider */
+  .compare{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  .pane{position:relative;background:var(--card);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+  .pane img{max-width:420px;max-height:360px;display:block;border-radius:6px}
+  .sliderWrapper{position:relative;display:inline-block}
+  .split{position:absolute;left:0;top:0;height:100%;overflow:hidden}
+  .slider{width:320px}
+  footer{margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+  @media (max-width:980px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Image Converter Pro+ — NextGen v3</h1>
+      <p>Batch convert · AI tools · Before/After slider · ZIP export</p>
+    </div>
+    <div style="text-align:right">
+      <div id="apiMode" style="color:var(--muted);font-size:13px">API Mode: <strong id="apiState">Not configured</strong></div>
+      <button class="btn ghost" id="settingsBtn" style="margin-top:8px">Settings</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav>
+      <div class="nav-section active">Convert</div>
+      <div class="nav-section">Resize</div>
+      <div class="nav-section">AI Tools</div>
+      <div class="nav-section">Options</div>
+      <div class="ad">[Sidebar Ad Placeholder]</div>
+    </nav>
+
+    <main class="panel">
+      <div class="top-controls">
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+        <button class="btn" id="chooseBtn">Choose files</button>
+
+        <div style="min-width:140px">
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">Format</label>
+          <select id="formatSelect"><option value="auto">Auto (Best)</option><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WEBP</option></select>
+        </div>
+
+        <div style="min-width:220px">
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">Quality</label>
+          <input id="qualityRange" type="range" min="10" max="100" value="100"/>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:8px;color:var(--muted)">
+          <input type="checkbox" id="applyEnhance"/> Use AI
+        </label>
+
+        <div>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px">AI Model</label>
+          <select id="aiModel"><option value="enhance">Enhance Details</option><option value="upscale">Upscale 4×</option><option value="denoise">Denoise</option></select>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <button class="btn" id="convertBtn">Convert & Prepare</button>
+          <button class="btn ghost" id="downloadZipBtn">Download All (ZIP)</button>
+        </div>
+      </div>
+
+      <div id="dropzone" class="dropzone">
+        <div style="font-size:20px;font-weight:600;color:#fff;margin-bottom:8px">Drop images here or choose files</div>
+        <div style="color:var(--muted)">Supports JPG, PNG, WEBP — batch convert & AI ops</div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress"><i id="progressBar"></i></div>
+        <div class="status" id="status">Ready — add images to begin</div>
+      </div>
+
+      <div class="thumbs" id="thumbs"></div>
+
+      <div id="compareArea" class="compare" style="display:none">
+        <div class="pane">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px">Before</div>
+          <div class="sliderWrapper">
+            <img id="beforeImg" src="" alt="before">
+          </div>
+        </div>
+        <div class="pane">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px">After</div>
+          <div style="position:relative">
+            <div style="margin-bottom:6px"><input id="compareRange" class="slider" type="range" min="0" max="100" value="100" /></div>
+            <div style="position:relative;display:inline-block">
+              <img id="afterImg" src="" alt="after" style="position:relative;display:block;max-width:420px;max-height:360px;border-radius:6px" />
+              <div id="afterOverlay" class="split" style="width:100%;position:absolute;left:0;top:0;overflow:hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ad" style="margin-top:18px">[Footer Ad Placeholder — paste Ad code here]</div>
+    </main>
+  </div>
+
+  <footer>Made with ❤️ — NextGen v3</footer>
+</div>
+
+<!-- libs -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+<script>
+/* NextGen v3
+   - Replace API_KEY with your own DeepAI/other key if you want AI features.
+   - AI step will be skipped safely if API not provided.
+*/
+const API_KEY = "7f65d332-4d9a-4697-ae69-1b780a1571cb"; // <-- paste your API key here (locally)
+document.getElementById('apiState').textContent = (API_KEY && API_KEY !== "YOUR_API_KEY_HERE") ? "Configured" : "Not configured";
+
+const chooseBtn = document.getElementById('chooseBtn');
+const fileInput = document.getElementById('fileInput');
+const dropzone = document.getElementById('dropzone');
+const thumbsEl = document.getElementById('thumbs');
+const progressBar = document.getElementById('progressBar');
+const statusEl = document.getElementById('status');
+const convertBtn = document.getElementById('convertBtn');
+const downloadZipBtn = document.getElementById('downloadZipBtn');
+
+const formatSelect = document.getElementById('formatSelect');
+const qualityRange = document.getElementById('qualityRange');
+const applyEnhance = document.getElementById('applyEnhance');
+const aiModel = document.getElementById('aiModel');
+
+const compareArea = document.getElementById('compareArea');
+const beforeImg = document.getElementById('beforeImg');
+const afterImg = document.getElementById('afterImg');
+const compareRange = document.getElementById('compareRange');
+const afterOverlay = document.getElementById('afterOverlay');
+
+let items = []; // {file, previewURL, convertedBlob, enhancedBlob, outName, status}
+
+// Helpers
+function bytesToSize(bytes){ if(!bytes) return '0 B'; const sizes=['B','KB','MB','GB']; const i=Math.floor(Math.log(bytes)/Math.log(1024)); return (bytes/Math.pow(1024,i)).toFixed(2)+' '+sizes[i]; }
+function setProgress(p){ progressBar.style.width = Math.min(100, Math.max(0, p)) + '%'; }
+function mimeToExt(mime){ if(mime==='image/png') return 'png'; if(mime==='image/webp') return 'webp'; return 'jpg'; }
+
+// File UI
+chooseBtn.addEventListener('click', ()=>fileInput.click());
+fileInput.addEventListener('change', (e)=> addFiles(e.target.files));
+['dragenter','dragover'].forEach(ev=>dropzone.addEventListener(ev,e=>{ e.preventDefault(); dropzone.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev=>dropzone.addEventListener(ev,e=>{ e.preventDefault(); dropzone.classList.remove('drag'); }));
+dropzone.addEventListener('drop', e=>{ if(e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+function addFiles(list){
+  const arr = Array.from(list).filter(f => f.type && f.type.startsWith('image/'));
+  arr.forEach(file => {
+    const previewURL = URL.createObjectURL(file);
+    items.push({ file, previewURL, convertedBlob: null, enhancedBlob: null, outName: null, status:'ready' });
+  });
+  renderThumbs();
+}
+
+function renderThumbs(){
+  thumbsEl.innerHTML = '';
+  if(items.length === 0){ statusEl.textContent = 'Ready — add images to begin'; setProgress(0); return; }
+  items.forEach((it, idx) => {
+    const div = document.createElement('div'); div.className='thumb';
+    const img = document.createElement('img'); img.src = it.previewURL;
+    const name = document.createElement('div'); name.className='name'; name.textContent = it.file.name;
+    const small = document.createElement('div'); small.className='small'; small.textContent = bytesToSize(it.file.size);
+    const actions = document.createElement('div'); actions.style.marginTop='8px';
+
+    const dlOrig = document.createElement('a'); dlOrig.className='btn ghost'; dlOrig.style.fontSize='12px'; dlOrig.textContent='Orig'; dlOrig.href=it.previewURL; dlOrig.download=it.file.name;
+    actions.appendChild(dlOrig);
+
+    if(it.convertedBlob){
+      const outUrl = URL.createObjectURL(it.convertedBlob);
+      const dlOut = document.createElement('a'); dlOut.className='btn ghost'; dlOut.style.fontSize='12px'; dlOut.textContent='Download'; dlOut.href = outUrl; dlOut.download = it.outName || ('converted-'+it.file.name);
+      dlOut.style.marginLeft = '6px';
+      const previewBtn = document.createElement('button'); previewBtn.className='downloadLink'; previewBtn.textContent='Preview'; previewBtn.style.marginLeft='6px';
+      previewBtn.onclick = ()=> showCompare(it);
+      actions.appendChild(dlOut); actions.appendChild(previewBtn);
+    }
+
+    const rm = document.createElement('button'); rm.className='downloadLink'; rm.textContent='Remove'; rm.style.marginLeft='6px';
+    rm.onclick = ()=>{ URL.revokeObjectURL(it.previewURL); items.splice(idx,1); renderThumbs(); };
+    actions.appendChild(rm);
+
+    div.appendChild(img); div.appendChild(name); div.appendChild(small); div.appendChild(actions);
+    thumbsEl.appendChild(div);
+  });
+}
+
+// Convert pipeline
+async function convertAll(){
+  if(items.length === 0){ alert('Pehle images add karo'); return; }
+  const opts = {
+    format: formatSelect.value,
+    quality: parseInt(qualityRange.value),
+    ai: applyEnhance.checked,
+    model: aiModel.value
+  };
+
+  // if AI requested but no key
+  if(opts.ai && (!API_KEY || API_KEY === "YOUR_API_KEY_HERE")){
+    if(!confirm('API key configured nahi hai. Convert without AI? OK to continue without AI.')) return;
+    opts.ai = false;
+  }
+
+  convertBtn.disabled = true; downloadZipBtn.disabled = true;
+  statusEl.textContent = 'Starting...';
+  setProgress(0);
+
+  for(let i=0;i<items.length;i++){
+    const it = items[i];
+    statusEl.textContent = `Converting ${i+1}/${items.length} — ${it.file.name}`;
+    setProgress(Math.round((i/items.length)*50)); // convert stage
+
+    try {
+      // Auto format: choose best if "auto" selected
+      let outMime = opts.format;
+      if(outMime === 'auto'){
+        // if png original has alpha -> keep png, else webp for smaller size
+        const hasAlpha = await detectAlpha(it.file);
+        outMime = hasAlpha ? 'image/png' : 'image/webp';
+      }
+      const convBlob = await convertClientSide(it.file, outMime, opts.quality);
+      it.convertedBlob = convBlob;
+      it.outName = it.file.name.replace(/\.[^/.]+$/, "") + '.' + mimeToExt(outMime);
+    } catch(err){
+      console.error('convert error', err);
+      it.status = 'error';
+      continue;
+    }
+
+    // AI step
+    if(opts.ai){
+      statusEl.textContent = `AI ${opts.model} ${i+1}/${items.length}`;
+      setProgress(50 + Math.round((i/items.length)*40)); // AI stage
+      try{
+        const enhanced = await applyAI(it.convertedBlob, opts.model);
+        if(enhanced) { it.enhancedBlob = enhanced; it.convertedBlob = enhanced; }
+      } catch(e){
+        console.warn('AI failed for', it.file.name, e);
+        // fallback: keep converted
+      }
+    }
+
+    setProgress(50 + Math.round(((i+1)/items.length)*40));
+  }
+
+  setProgress(100);
+  statusEl.textContent = 'All done — ready to download';
+  convertBtn.disabled = false; downloadZipBtn.disabled = false;
+  renderThumbs();
+}
+
+// client-side convert: returns Blob
+function convertClientSide(file, mime, quality){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width; canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(blob => {
+        if(!blob) reject(new Error('Conversion failed'));
+        else resolve(blob);
+      }, mime, mime === 'image/png' ? 1.0 : quality/100);
+    };
+    img.onerror = e => reject(e);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// Detect alpha channel quickly by drawing to canvas and checking data (small canvas)
+function detectAlpha(file){
+  return new Promise((res)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const c = document.createElement('canvas');
+      c.width = Math.min(50, img.width); c.height = Math.min(50, img.height);
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img,0,0,c.width,c.height);
+      const d = ctx.getImageData(0,0,c.width,c.height).data;
+      for(let i=3;i<d.length;i+=4){ if(d[i] < 255){ res(true); return; } }
+      res(false);
+    };
+    img.onerror = ()=>res(false);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// AI integration (DeepAI default mapping)
+// returns blob (image) or throws
+async function applyAI(blob, model){
+  const endpoints = {
+    enhance: "https://api.deepai.org/api/enhance",
+    upscale: "https://api.deepai.org/api/torch-srgan",
+    denoise: "https://api.deepai.org/api/waifu2x"
+  };
+  const endpoint = endpoints[model];
+  if(!endpoint) throw new Error('Unknown model');
+
+  const form = new FormData();
+  form.append('image', blob, 'input.jpg');
+
+  const resp = await fetch(endpoint, {
+    method: 'POST',
+    headers: (API_KEY && API_KEY !== "YOUR_API_KEY_HERE") ? { 'Api-Key': API_KEY } : {},
+    body: form
+  });
+
+  const ct = resp.headers.get('content-type') || '';
+  if(ct.includes('application/json')){
+    const j = await resp.json();
+    if(j.output_url){
+      const out = await fetch(j.output_url);
+      return await out.blob();
+    }
+    // some APIs return base64 data inside JSON
+    if(j.output && typeof j.output === 'string' && j.output.startsWith('data:')){
+      return dataURLtoBlob(j.output);
+    }
+    throw new Error('AI returned no output');
+  } else {
+    // direct image blob
+    return await resp.blob();
+  }
+}
+
+function dataURLtoBlob(dataurl){
+  const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]); let n = bstr.length; const u8 = new Uint8Array(n);
+  while(n--) u8[n] = bstr.charCodeAt(n);
+  return new Blob([u8], {type:mime});
+}
+
+// Before/After slider handling
+function showCompare(it){
+  compareArea.style.display = 'flex';
+  beforeImg.src = it.previewURL;
+  const final = it.enhancedBlob || it.convertedBlob || it.previewURL;
+  if(final instanceof Blob) afterImg.src = URL.createObjectURL(final);
+  else afterImg.src = final;
+  compareRange.value = 100;
+  updateOverlay();
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+compareRange.addEventListener('input', updateOverlay);
+function updateOverlay(){
+  const v = parseInt(compareRange.value);
+  const imgWidth = afterImg.clientWidth || 320;
+  afterOverlay.style.width = (v/100 * imgWidth) + 'px';
+  afterOverlay.style.height = afterImg.clientHeight + 'px';
+  // place overlay image inside overlay div
+  afterOverlay.style.backgroundImage = `url(${afterImg.src})`;
+  afterOverlay.style.backgroundSize = 'cover';
+  afterOverlay.style.backgroundPosition = 'center center';
+}
+
+// ZIP download
+async function downloadZip(){
+  if(items.length === 0) return alert('No files');
+  const zip = new JSZip();
+  let added = 0;
+  items.forEach(it=>{
+    const b = it.enhancedBlob || it.convertedBlob;
+    if(b){ zip.file(it.outName || it.file.name, b); added++; }
+  });
+  if(added === 0) return alert('No converted files to zip');
+  statusEl.textContent = 'Preparing ZIP...';
+  const content = await zip.generateAsync({type:'blob'}, meta => {
+    setProgress(Math.round(90 + meta.percent/100*10));
+    statusEl.textContent = `Zipping ${Math.round(meta.percent)}%`;
+  });
+  saveAs(content, `images-converted-${Date.now()}.zip`);
+  statusEl.textContent = 'ZIP ready';
+  setProgress(100);
+}
+
+// small saveAs fallback
+function saveAs(blob, filename){
+  if(window.saveAs) return window.saveAs(blob, filename);
+  const a = document.createElement('a'); const url = URL.createObjectURL(blob);
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 5000);
+}
+
+// events
+convertBtn.addEventListener('click', convertAll);
+downloadZipBtn.addEventListener('click', downloadZip);
+
+// quick settings prompt (advice)
+document.getElementById('settingsBtn').addEventListener('click', ()=>{
+  alert('To enable AI set your API key in the file (const API_KEY) before loading the page. For security, do not expose the key publicly.');
+});
+
+// allow paste from clipboard
+window.addEventListener('paste', e=>{
+  const itemsIn = e.clipboardData && e.clipboardData.items;
+  if(!itemsIn) return;
+  for(const it of itemsIn){
+    if(it.type && it.type.indexOf('image')>=0){
+      const f = it.getAsFile(); if(f) addFiles([f]);
+    }
+  }
+});
+
+// init state
+statusEl.textContent = 'Ready — drop or choose images';
+setProgress(0);
+</script>
+</body>
+</html>

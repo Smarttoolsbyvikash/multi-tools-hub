@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Advanced Age Calculator — Final</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root{
+      --bg1:#0c0f2a;
+      --bg2:#07091a;
+      --card:#1a2140;
+      --accent:#ffb400;
+      --muted:#a9b0c0;
+      --glass: rgba(255,255,255,0.03);
+      font-family: "Segoe UI", Roboto, system-ui, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 20px;
+      background: radial-gradient(circle at 30% 20%, #11132b 0%, #0a0c1a 50%, #040510 100%);
+      color:#fff;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:980px;
+      display:grid;
+      grid-template-columns: 1fr 260px;
+      gap:24px;
+      align-items:start;
+    }
+    @media (max-width:900px){
+      .wrap{ grid-template-columns:1fr; padding-bottom:60px; }
+    }
+
+    header{
+      grid-column:1/-1;
+      text-align:center;
+      margin-bottom:6px;
+    }
+    h1{
+      margin:0;
+      color:var(--accent);
+      font-size:2.2rem;
+      letter-spacing:0.2px;
+      text-shadow:0 4px 18px rgba(0,0,0,0.6);
+    }
+    .main{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:22px;
+      box-shadow: 0 10px 40px rgba(3,6,20,0.6);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    label{ display:block; color:var(--muted); font-weight:600; margin-bottom:8px; }
+    .field{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:rgba(255,255,255,0.02); color:#fff; font-size:15px; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:12px;}
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+
+    button{
+      cursor:pointer;
+      border:0;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:700;
+    }
+    .btn-calc{ background:var(--accent); color:#081224; box-shadow:0 8px 18px rgba(255,180,0,0.08); }
+    .btn-clear{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03); }
+    .btn-download{ background:#0ea5a3; color:#022; }
+
+    .ad-slot{
+      margin-top:12px;
+      border-radius:10px;
+      border:1px dashed rgba(255,255,255,0.06);
+      padding:12px;
+      color:var(--muted);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      text-align:center;
+    }
+
+    .result-card{
+      margin-top:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border-radius:12px;
+      padding:18px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .result-title{ font-weight:800; color:#fff; margin:0 0 8px 0; font-size:1.05rem; }
+    .bigline{ font-size:1.15rem; font-weight:800; margin-bottom:8px; color:#e9eef8;}
+    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:center; }
+    .item{ color:var(--muted); font-weight:600; padding:6px 8px; border-radius:8px; background:rgba(255,255,255,0.01); }
+
+    .sidebar{
+      position:relative;
+      top:0;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:stretch;
+    }
+    .card-side{
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 8px 30px rgba(3,6,20,0.5);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .muted{ color:var(--muted); font-size:0.9rem; }
+
+    footer{ grid-column:1/-1; text-align:center; margin-top:16px; color:rgba(255,255,255,0.6); font-size:13px; }
+
+    .hidden{ display:none !important; }
+    select.field { appearance: none; -webkit-appearance: none; -moz-appearance: none; padding-right:34px; background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.1) 50%), linear-gradient(135deg, rgba(255,255,255,0.1) 50%, transparent 50%); background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px); background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Advanced Age Calculator</h1>
+      <div style="margin-top:8px;" class="muted">DOB select karo ya manually type karo — live counter aur download support hai</div>
+    </header>
+
+    <section class="main">
+      <label for="dob">Date of Birth</label>
+      <div class="row">
+        <input id="dob" class="field" type="date" style="flex:1;" />
+        <input id="dobText" class="field" type="text" placeholder="or type (dd/mm/yyyy)" style="flex:1;" />
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="currentDateOption">Current Date Option</label>
+        <select id="currentDateOption" class="field">
+          <option value="today">Use Today's Date (live)</option>
+          <option value="2025-10-10">Use 10/10/2025 (fixed)</option>
+          <option value="custom">Custom Date</option>
+        </select>
+        <input id="customDate" class="field hidden" type="date" style="margin-top:8px;" />
+      </div>
+
+      <div style="margin-top:12px;">
+        <label for="adPlacement">Ad Placement (preview)</label>
+        <select id="adPlacement" class="field">
+          <option value="top">Top Ad</option>
+          <option value="bottom">Bottom Ad</option>
+          <option value="inline">Inline Ad</option>
+          <option value="sidebar">Sidebar Ad</option>
+        </select>
+      </div>
+
+      <div class="controls" style="margin-top:14px;">
+        <button id="calcBtn" class="btn-calc">Calculate</button>
+        <button id="clearBtn" class="btn-clear">Clear</button>
+        <button id="downloadBtn" class="btn-download">Download Result</button>
+      </div>
+
+      <div id="adTop" class="ad-slot hidden">[Top Ad Placeholder] — paste ad script here</div>
+
+      <div id="resultWrap" class="result-card hidden" style="margin-top:16px;">
+        <div id="resHeader" class="result-title">Your Age</div>
+        <div id="resExact" class="bigline">—</div>
+        <div class="grid2" id="resGrid">
+          <div class="item" id="resMonths">—</div>
+          <div class="item" id="resHours">—</div>
+          <div class="item" id="resWeeks">—</div>
+          <div class="item" id="resMinutes">—</div>
+          <div class="item" id="resDays">—</div>
+          <div class="item" id="resSeconds">—</div>
+        </div>
+      </div>
+
+      <div id="adInline" class="ad-slot hidden">[Inline Ad Placeholder]</div>
+      <div id="adBottom" class="ad-slot hidden">[Bottom Ad Placeholder]</div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card-side">
+        <div style="font-weight:700; margin-bottom:8px;">Ad Preview</div>
+        <div id="adSidebar" class="ad-slot hidden" style="padding:18px; max-width:220px; margin:auto;">[Sidebar Ad Placeholder]</div>
+        <div style="margin-top:10px;" class="muted">Choose ad placement to preview. Replace placeholders with your ad code.</div>
+      </div>
+
+      <div class="card-side">
+        <div style="font-weight:700; margin-bottom:8px;">Tips</div>
+        <ul style="margin:0 0 0 16px; padding:0; color:var(--muted)">
+          <li>Use 10/10/2025 for fixed demo</li>
+          <li>Live counter runs only when using "Today's Date"</li>
+          <li>Download captures the result card (no ads included)</li>
+        </ul>
+      </div>
+    </aside>
+
+    <footer>Made with ❤️ — copy & customize</footer>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const dobInput = $('dob');
+    const dobText = $('dobText');
+    const currentDateOption = $('currentDateOption');
+    const customDate = $('customDate');
+    const adPlacement = $('adPlacement');
+    const calcBtn = $('calcBtn');
+    const clearBtn = $('clearBtn');
+    const downloadBtn = $('downloadBtn');
+
+    const adTop = $('adTop');
+    const adInline = $('adInline');
+    const adBottom = $('adBottom');
+    const adSidebar = $('adSidebar');
+
+    const resultWrap = $('resultWrap');
+    const resExact = $('resExact');
+    const resMonths = $('resMonths');
+    const resWeeks = $('resWeeks');
+    const resDays = $('resDays');
+    const resHours = $('resHours');
+    const resMinutes = $('resMinutes');
+    const resSeconds = $('resSeconds');
+
+    let liveInterval = null;
+
+    // sync DOB text ↔ date picker
+    dobInput.addEventListener('change', () => {
+      const val = dobInput.value;
+      if (val) {
+        const [y, m, d] = val.split('-');
+        dobText.value = `${d}/${m}/${y}`;
+      } else dobText.value = '';
+    });
+
+    dobText.addEventListener('input', () => {
+      const t = dobText.value.trim().replaceAll('-', '/');
+      const parts = t.split('/');
+      if (parts.length === 3) {
+        let [d, m, y] = parts;
+        if (d.length === 1) d = '0' + d;
+        if (m.length === 1) m = '0' + m;
+        if (y.length === 2) y = '20' + y;
+        if (+m >= 1 && +m <= 12 && +d >= 1 && +d <= 31 && +y > 1900) {
+          dobInput.value = `${y}-${m}-${d}`;
+        }
+      }
+    });
+
+    currentDateOption.addEventListener('change', () => {
+      customDate.classList.toggle('hidden', currentDateOption.value !== 'custom');
+      stopLive();
+    });
+
+    adPlacement.addEventListener('change', () => updateAdsPreview());
+
+    function updateAdsPreview() {
+      const p = adPlacement.value;
+      adTop.classList.toggle('hidden', p !== 'top');
+      adInline.classList.toggle('hidden', p !== 'inline');
+      adBottom.classList.toggle('hidden', p !== 'bottom');
+      adSidebar.classList.toggle('hidden', p !== 'sidebar');
+    }
+
+    function fmt(n){ return n.toLocaleString(); }
+
+    function calcYMD(start, end){
+      let sy = start.getFullYear(), sm = start.getMonth(), sd = start.getDate();
+      let ey = end.getFullYear(), em = end.getMonth(), ed = end.getDate();
+      let y = ey - sy, m = em - sm, d = ed - sd;
+      if (d < 0) { const prev = new Date(ey, em, 0).getDate(); d += prev; m -= 1; }
+      if (m < 0) { m += 12; y -= 1; }
+      return { years: y, months: m, days: d };
+    }
+
+    function updateResult(dobStr, refDate, live=false){
+      const birth = new Date(dobStr + 'T00:00:00');
+      const now = new Date(refDate.getTime());
+      const ymd = calcYMD(birth, now);
+      const years = ymd.years, months = ymd.months, days = ymd.days;
+      const msDiff = now.getTime() - birth.getTime();
+      const totalSeconds = Math.floor(msDiff / 1000);
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const totalHours = Math.floor(totalMinutes / 60);
+      const totalDays = Math.floor(totalHours / 24);
+      const totalWeeks = Math.floor(totalDays / 7);
+      const weeksRemain = totalDays % 7;
+      const totalMonths = years * 12 + months;
+
+      resExact.textContent = `${years} years, ${months} months, ${days} days`;
+      resMonths.textContent = `${fmt(totalMonths)} months`;
+      resWeeks.textContent = `${fmt(totalWeeks)} weeks ${fmt(weeksRemain)} days`;
+      resDays.textContent = `${fmt(totalDays)} days`;
+      resHours.textContent = `${fmt(totalHours)} hours`;
+      resMinutes.textContent = `${fmt(totalMinutes)} minutes`;
+      resSeconds.textContent = `${fmt(totalSeconds)} seconds`;
+
+      resultWrap.classList.remove('hidden');
+    }
+
+    function startLive(dobStr){
+      stopLive();
+      liveInterval = setInterval(()=> updateResult(dobStr, new Date(), true), 1000);
+      updateResult(dobStr, new Date(), true);
+    }
+
+    function stopLive(){ if(liveInterval){clearInterval(liveInterval); liveInterval=null;} }
+
+    calcBtn.addEventListener('click', () => {
+      const dobVal = dobInput.value;
+      if (!dobVal) { alert('Please select or type Date of Birth.'); return; }
+
+      let refDate;
+      if (currentDateOption.value === 'today') {
+        refDate = new Date(); startLive(dobVal);
+      } else if (currentDateOption.value === '2025-10-10') {
+        stopLive(); refDate = new Date('2025-10-10T00:00:00'); updateResult(dobVal, refDate, false);
+      } else {
+        if (!customDate.value) { alert('Please select a custom current date.'); return; }
+        stopLive(); refDate = new Date(customDate.value + 'T00:00:00'); updateResult(dobVal, refDate, false);
+      }
+
+      updateAdsPreview();
+      setTimeout(()=> resultWrap.scrollIntoView({behavior:'smooth', block:'center'}), 200);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      dobInput.value = ''; dobText.value = ''; customDate.value = ''; resultWrap.classList.add('hidden'); stopLive();
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (resultWrap.classList.contains('hidden')) { alert('Please calculate first.'); return; }
+      html2canvas(resultWrap, {backgroundColor:null, scale:2, useCORS:true}).then(canvas=>{
+        canvas.toBlob(blob=>{
+          const a=document.createElement('a');
+          const url=URL.createObjectURL(blob);
+          a.href=url; a.download='age-result.png'; document.body.appendChild(a); a.click();
+          setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},500);
+        });
+      }).catch(err=> alert('Download failed: '+err.message));
+    });
+
+    updateAdsPreview();
+    window.addEventListener('beforeunload', stopLive);
+  </script>
+</body>
+</html>

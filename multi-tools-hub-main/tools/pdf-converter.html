@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PDF Converter — Earn with Ads</title>
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  :root{
+    --bg:#0E121C; --panel:#252842; --accent:#FFD700; --muted:#9AA6B2;
+  }
+  body{
+    margin:0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg,var(--bg),#1E2030);
+    color:#fff;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:28px 12px;
+    min-height:100vh;
+  }
+
+  .container{
+    width:100%;
+    max-width:980px;
+  }
+
+  h1{
+    color:var(--accent);
+    text-align:center;
+    margin-bottom:18px;
+    font-size:1.6rem;
+  }
+
+  .panel{
+    background:var(--panel);
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.45);
+  }
+
+  .top-ad, .mid-ad, .bot-ad{
+    background:rgba(255,215,0,0.06);
+    border:1px solid rgba(255,215,0,0.18);
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:16px;
+    text-align:center;
+  }
+  .top-ad p, .mid-ad p, .bot-ad p{ color:var(--accent); margin:6px 0; font-size:0.95rem;}
+
+  .uploader{
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .left{
+    flex:1 1 540px;
+    min-width:260px;
+  }
+
+  #dropArea{
+    border:2px dashed var(--accent);
+    border-radius:10px;
+    padding:14px;
+    cursor:pointer;
+    text-align:center;
+    background:rgba(255,255,255,0.02);
+  }
+  #dropArea.hover{ border-color:#E6C200; }
+
+  input[type=file]{ display:none; }
+
+  .controls{
+    margin-top:12px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  select, input[type=number], button{
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    font-size:0.95rem;
+  }
+  button{
+    background:var(--accent);
+    color:#111;
+    font-weight:700;
+    cursor:pointer;
+  }
+  button:hover{ opacity:0.95; transform:translateY(-1px); }
+
+  .right{
+    width:260px;
+    min-width:220px;
+  }
+
+  .preview-list{
+    margin-top:14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height:420px;
+    overflow:auto;
+    padding-right:6px;
+  }
+
+  .thumb{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    background:rgba(0,0,0,0.12);
+    padding:8px;
+    border-radius:8px;
+  }
+  .thumb img{ width:64px; height:64px; object-fit:cover; border-radius:6px; }
+  .thumb .meta{ flex:1; font-size:0.9rem; color:#dfe7f2; }
+  .thumb .actions{ display:flex; gap:6px; }
+  .small-btn{ padding:6px 8px; border-radius:6px; background:#1b2030; color:var(--accent); border:1px solid rgba(255,215,0,0.06); cursor:pointer; }
+
+  .result{
+    margin-top:14px;
+    padding:12px;
+    background:#1b2130;
+    border-radius:10px;
+    text-align:center;
+  }
+
+  @media(max-width:880px){
+    .uploader{ flex-direction:column; }
+    .right{ width:100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF Converter — Image to PDF (Adsense Earning)</h1>
+    <div class="panel">
+
+      <!-- Top Ad -->
+      <div class="top-ad">
+        <p>Advertisement</p>
+        <!-- Paste AdSense code here -->
+        <div style="width:100%;height:90px;background:#1E2030;color:var(--accent);display:flex;align-items:center;justify-content:center;border-radius:6px;">
+          <small>Your Ad Here (728x90)</small>
+        </div>
+      </div>
+
+      <div class="uploader">
+        <div class="left">
+          <div id="dropArea">
+            <div style="font-weight:600;color:var(--accent);margin-bottom:6px;">Drag & Drop Images Here or Click to Upload</div>
+            <div style="font-size:0.9rem;color:#cfd8e3;">Supports JPG, PNG, WEBP. Upload multiple images (they become PDF pages in order).</div>
+            <input id="fileInput" type="file" accept="image/*" multiple>
+          </div>
+
+          <div class="controls">
+            <label>
+              Page Size:
+              <select id="pageSize">
+                <option value="a4">A4 (210 × 297 mm)</option>
+                <option value="a4-landscape">A4 Landscape</option>
+                <option value="letter">Letter (8.5 × 11 in)</option>
+              </select>
+            </label>
+
+            <label>
+              Margin (mm):
+              <input id="margin" type="number" min="0" max="50" value="10" style="width:90px;">
+            </label>
+
+            <label>
+              Image Fit:
+              <select id="fit">
+                <option value="contain">Contain (fit inside page)</option>
+                <option value="cover">Cover (fill page, may crop)</option>
+              </select>
+            </label>
+
+            <button id="generateBtn">Generate PDF</button>
+            <button id="clearBtn" style="background:#333;color:var(--accent);">Clear</button>
+          </div>
+
+          <div class="result" id="resultArea">
+            <div style="font-size:0.95rem;color:#dfe7f2;">No PDF generated yet.</div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div style="font-weight:600;color:var(--accent);margin-bottom:10px;">Preview & Order</div>
+
+          <div class="preview-list" id="previewList">
+            <!-- Thumbnails will appear here -->
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:8px;">
+            <button id="moveUp" class="small-btn">↑ Move Up</button>
+            <button id="moveDown" class="small-btn">↓ Move Down</button>
+            <button id="remove" class="small-btn">✕ Remove</button>
+          </div>
+
+          <!-- Middle Ad -->
+          <div class="mid-ad" style="margin-top:16px;">
+            <p>Sponsored</p>
+            <!-- Paste another AdSense code here -->
+            <div style="width:100%;height:250px;background:#1E2030;color:var(--accent);display:flex;align-items:center;justify-content:center;border-radius:6px;">
+              <small>Your Ad Here (300x250)</small>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom Ad -->
+      <div style="margin-top:14px;" class="bot-ad">
+        <p>Advertisement</p>
+        <!-- Paste third ad code here -->
+        <div style="width:100%;height:90px;background:#1E2030;color:var(--accent);display:flex;align-items:center;justify-content:center;border-radius:6px;">
+          <small>Your Ad Here (728x90)</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // Using jsPDF (UMD) loaded above
+  const { jsPDF } = window.jspdf;
+
+  const fileInput = document.getElementById('fileInput');
+  const dropArea = document.getElementById('dropArea');
+  const previewList = document.getElementById('previewList');
+  const generateBtn = document.getElementById('generateBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const resultArea = document.getElementById('resultArea');
+  const pageSizeSelect = document.getElementById('pageSize');
+  const marginInput = document.getElementById('margin');
+  const fitSelect = document.getElementById('fit');
+
+  let images = []; // { file, dataUrl, name, width, height }
+  let selectedIndex = -1;
+
+  // Drag/drop handlers
+  ['dragenter','dragover','dragleave','drop'].forEach(evt=>{
+    dropArea.addEventListener(evt, e=>{
+      e.preventDefault(); e.stopPropagation();
+      if(evt==='dragover') dropArea.classList.add('hover');
+      if(evt==='dragleave' || evt==='drop') dropArea.classList.remove('hover');
+    });
+  });
+
+  dropArea.addEventListener('drop', e=>{
+    const dt = e.dataTransfer;
+    if(dt && dt.files) handleFiles(dt.files);
+  });
+
+  dropArea.addEventListener('click', ()=>fileInput.click());
+  fileInput.addEventListener('change', ()=> handleFiles(fileInput.files));
+
+  function handleFiles(fileList){
+    const arr = Array.from(fileList);
+    const imageFiles = arr.filter(f=>f.type.startsWith('image/'));
+    if(imageFiles.length===0) return alert('Please upload image files (jpg/png/webp).');
+    // load each file as dataURL and collect dimensions
+    const promises = imageFiles.map(f=> loadImageFile(f));
+    Promise.all(promises).then(objs=>{
+      images = images.concat(objs);
+      renderPreview();
+    }).catch(err=> console.error(err));
+  }
+
+  function loadImageFile(file){
+    return new Promise((res, rej)=>{
+      const reader = new FileReader();
+      reader.onload = ev=>{
+        const dataUrl = ev.target.result;
+        const img = new Image();
+        img.onload = ()=>{
+          res({ file, dataUrl, name: file.name, width: img.width, height: img.height });
+        };
+        img.onerror = rej;
+        img.src = dataUrl;
+      };
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPreview(){
+    previewList.innerHTML = '';
+    images.forEach((it, idx)=>{
+      const div = document.createElement('div');
+      div.className = 'thumb';
+      div.dataset.index = idx;
+      div.innerHTML = `
+        <img src="${it.dataUrl}" alt="${it.name}">
+        <div class="meta">
+          <div style="font-weight:600;color:#fff;">${it.name}</div>
+          <div style="font-size:0.85rem;color:#bcd0e6;">${it.width}×${it.height}px</div>
+        </div>
+        <div class="actions">
+          <button class="small-btn select-btn" title="Select">Select</button>
+        </div>
+      `;
+      previewList.appendChild(div);
+
+      div.querySelector('.select-btn').addEventListener('click', ()=>{
+        selectedIndex = idx;
+        document.querySelectorAll('.thumb').forEach(t=> t.style.outline='none');
+        div.style.outline = '2px solid rgba(255,215,0,0.18)';
+      });
+    });
+    if(images.length===0){
+      resultArea.innerHTML = `<div style="color:#dfe7f2">No images uploaded.</div>`;
+    } else {
+      resultArea.innerHTML = `<div style="color:#dfe7f2">${images.length} image(s) ready — set order & press Generate PDF.</div>`;
+    }
+  }
+
+  // Move up / down / remove
+  document.getElementById('moveUp').addEventListener('click', ()=>{
+    if(selectedIndex<=0) return;
+    const tmp = images[selectedIndex-1];
+    images[selectedIndex-1] = images[selectedIndex];
+    images[selectedIndex] = tmp;
+    selectedIndex = selectedIndex-1;
+    renderPreview();
+    highlight(selectedIndex);
+  });
+  document.getElementById('moveDown').addEventListener('click', ()=>{
+    if(selectedIndex<0 || selectedIndex>=images.length-1) return;
+    const tmp = images[selectedIndex+1];
+    images[selectedIndex+1] = images[selectedIndex];
+    images[selectedIndex] = tmp;
+    selectedIndex = selectedIndex+1;
+    renderPreview();
+    highlight(selectedIndex);
+  });
+  document.getElementById('remove').addEventListener('click', ()=>{
+    if(selectedIndex<0) return;
+    images.splice(selectedIndex,1);
+    selectedIndex = -1;
+    renderPreview();
+  });
+
+  function highlight(i){
+    if(i<0) return;
+    const thumb = previewList.querySelector(`.thumb[data-index="${i}"]`);
+    if(thumb){ thumb.style.outline = '2px solid rgba(255,215,0,0.18)'; thumb.scrollIntoView({behavior:"smooth",block:"center"}); }
+  }
+
+  clearBtn.addEventListener('click', ()=>{
+    images = []; selectedIndex=-1; fileInput.value=''; renderPreview();
+  });
+
+  generateBtn.addEventListener('click', async ()=>{
+    if(images.length===0) return alert('Please add images first.');
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
+
+    try {
+      const pdf = await createPdfFromImages(images, {
+        pageSize: pageSizeSelect.value,
+        marginMM: parseFloat(marginInput.value) || 10,
+        fit: fitSelect.value
+      });
+      // Download with timestamp
+      const fileName = `converted_${new Date().toISOString().replace(/[:.]/g,'-')}.pdf`;
+      pdf.save(fileName);
+
+      resultArea.innerHTML = `<div style="color:#dfe7f2;font-weight:600;">PDF generated — <span style="color:var(--accent)">${fileName}</span> downloaded.</div>`;
+    } catch(err){
+      console.error(err);
+      alert('Error creating PDF: ' + err.message);
+    } finally {
+      generateBtn.disabled = false;
+      generateBtn.textContent = 'Generate PDF';
+    }
+  });
+
+  // MAIN conversion function
+  async function createPdfFromImages(imagesArr, opts){
+    const unit = 'mm';
+    let pageWidthMM = 210, pageHeightMM = 297; // A4 default
+    if(opts.pageSize === 'a4-landscape'){ pageWidthMM = 297; pageHeightMM = 210; }
+    if(opts.pageSize === 'letter'){ pageWidthMM = 216; pageHeightMM = 279; } // approx 8.5x11in in mm
+
+    const margin = opts.marginMM || 10;
+    const usableW = pageWidthMM - margin*2;
+    const usableH = pageHeightMM - margin*2;
+
+    const pdf = new jsPDF({ unit, format:[pageWidthMM, pageHeightMM] });
+
+    for(let i=0;i<imagesArr.length;i++){
+      const img = imagesArr[i];
+      // load image element to get data and natural dims
+      const imgEl = await loadImgElement(img.dataUrl);
+      // compute fit
+      const ratio = imgEl.naturalWidth / imgEl.naturalHeight;
+      let drawW = usableW, drawH = usableW / ratio;
+      if(opts.fit === 'contain'){
+        if(drawH > usableH){ drawH = usableH; drawW = usableH * ratio; }
+      } else { // cover
+        if(drawH < usableH){ drawH = usableH; drawW = usableH * ratio; }
+        // crop not implemented; we'll center and overflow is hidden by PDF bounds
+      }
+      const x = (pageWidthMM - drawW) / 2;
+      const y = (pageHeightMM - drawH) / 2;
+
+      // add image - convert dataURL to JPEG if needed for compatibility
+      // jsPDF addImage supports dataURL directly
+      pdf.addImage(imgEl, 'JPEG', x, y, drawW, drawH);
+      if(i < imagesArr.length - 1) pdf.addPage();
+    }
+
+    return pdf;
+  }
+
+  function loadImgElement(dataUrl){
+    return new Promise((res, rej)=>{
+      const img = new Image();
+      img.onload = ()=> res(img);
+      img.onerror = rej;
+      img.src = dataUrl;
+    });
+  }
+
+  // initial render
+  renderPreview();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",()=>console.log("JS Loaded OK"));
+</script>
+</body>
+</html>

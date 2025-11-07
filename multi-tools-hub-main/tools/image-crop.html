@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Image Crop Tool — Earn with Ads</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0E121C, #1E2030);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 30px 10px;
+  }
+
+  h1 {
+    color: #FFD700;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .tool-box {
+    background: #252842;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+    width: 95%;
+    max-width: 700px;
+  }
+
+  #dropArea {
+    border: 2px dashed #FFD700;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+  }
+
+  #dropArea.hover { border-color: #E6C200; }
+
+  img { max-width: 100%; display: block; margin-top: 10px; border-radius: 10px; }
+
+  select, input, button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 1rem;
+  }
+
+  button {
+    background-color: #FFD700;
+    color: #1E1E2F;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { background-color: #E6C200; }
+
+  .result {
+    margin-top: 20px;
+    background-color: #2B2D42;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  /* 💸 ADS BOXES */
+  .ad-container {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+  .ad-container p {
+    color: #FFD700;
+    font-size: 0.9rem;
+    margin: 8px 0;
+  }
+
+  /* Responsive iframe */
+  .ad-frame {
+    width: 100%;
+    height: 90px;
+    border: none;
+  }
+
+  @media(max-width:600px){
+    .ad-frame { height: 250px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Advanced Image Crop Tool (Adsense Earning Version)</h1>
+
+<div class="tool-box">
+
+  <!-- 🔶 Top Ad -->
+  <div class="ad-container">
+    <p>Advertisement</p>
+    <!-- ✅ Paste your AdSense code here -->
+    <iframe class="ad-frame" srcdoc="
+      <div style='width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1E2030;color:#FFD700;'>
+        Your Ad Here (728x90)
+      </div>
+    "></iframe>
+  </div>
+
+  <div id="dropArea">Drag & Drop Image Here or Click to Upload</div>
+  <input type="file" id="imageFile" accept="image/*" style="display:none;">
+
+  <label for="aspectRatio">Aspect Ratio:</label>
+  <select id="aspectRatio">
+    <option value="NaN">Free</option>
+    <option value="1">1:1</option>
+    <option value="16/9">16:9</option>
+    <option value="4/3">4:3</option>
+  </select>
+
+  <label for="format">Output Format:</label>
+  <select id="format">
+    <option value="png">PNG</option>
+    <option value="jpeg">JPEG</option>
+    <option value="webp">WEBP</option>
+  </select>
+
+  <label for="quality">Quality (0-1, JPEG/WEBP):</label>
+  <input type="number" id="quality" placeholder="0.8" step="0.1" min="0" max="1">
+
+  <button onclick="getCroppedImage()">Crop & Download</button>
+
+  <!-- 🔷 Middle Ad -->
+  <div class="ad-container">
+    <p>Sponsored</p>
+    <!-- ✅ Paste another AdSense or Adsterra code here -->
+    <iframe class="ad-frame" srcdoc="
+      <div style='width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1E2030;color:#FFD700;'>
+        Your Ad Here (300x250)
+      </div>
+    "></iframe>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <!-- 🔶 Bottom Ad -->
+  <div class="ad-container">
+    <p>Advertisement</p>
+    <!-- ✅ Paste your third ad code here -->
+    <iframe class="ad-frame" srcdoc="
+      <div style='width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1E2030;color:#FFD700;'>
+        Your Ad Here (728x90)
+      </div>
+    "></iframe>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script>
+const dropArea = document.getElementById('dropArea');
+const fileInput = document.getElementById('imageFile');
+let cropper = null;
+let uploadedImage = null;
+
+['dragenter','dragover','dragleave','drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, e=>{ e.preventDefault(); e.stopPropagation(); });
+});
+
+dropArea.addEventListener('dragover', ()=> dropArea.classList.add('hover'));
+dropArea.addEventListener('dragleave', ()=> dropArea.classList.remove('hover'));
+dropArea.addEventListener('drop', (e)=>{
+  dropArea.classList.remove('hover');
+  fileInput.files = e.dataTransfer.files;
+  loadImage(fileInput.files[0]);
+});
+dropArea.addEventListener('click', ()=> fileInput.click());
+fileInput.addEventListener('change', ()=> loadImage(fileInput.files[0]));
+
+function loadImage(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    if(uploadedImage) uploadedImage.remove();
+    const img = document.createElement('img');
+    img.id = 'imageToCrop';
+    img.src = e.target.result;
+    dropArea.innerText = '';
+    dropArea.appendChild(img);
+    uploadedImage = img;
+
+    if(cropper) cropper.destroy();
+    const aspect = eval(document.getElementById('aspectRatio').value);
+    cropper = new Cropper(img, { aspectRatio: aspect || NaN, viewMode:1, autoCropArea:1 });
+  }
+  reader.readAsDataURL(file);
+}
+
+function getCroppedImage(){
+  if(!cropper){ alert('Please upload an image first!'); return; }
+  const format = document.getElementById('format').value;
+  const quality = parseFloat(document.getElementById('quality').value) || 0.8;
+  const canvas = cropper.getCroppedCanvas();
+  const dataUrl = canvas.toDataURL('image/' + format, quality);
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+    <img src='${dataUrl}' alt='Cropped Image'>
+    <br><a href='${dataUrl}' download='cropped_image.${format}' style='color:#FFD700;text-decoration:none;font-weight:bold;'>⬇ Download Cropped Image</a>
+  `;
+}
+</script>
+</body>
+</html>

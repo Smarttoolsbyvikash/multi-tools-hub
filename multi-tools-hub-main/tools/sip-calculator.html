@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIP Calculator | MultiToolsHub</title>
+<meta name="description" content="Free SIP Calculator — calculate monthly SIP returns, goals, and total wealth. Download reports as PDF, PNG, or CSV.">
+
+<!-- External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+:root {
+  --bg-dark: #0b1128;
+  --card-dark: #171d3f;
+  --text-dark: #fff;
+  --bg-light: #f7f9fd;
+  --card-light: #fff;
+  --text-light: #111;
+  --accent: #ffb400;
+  --teal: #0ea5a3;
+}
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  transition: 0.4s ease;
+  padding: 20px;
+}
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--card-dark);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.4);
+}
+h1 {
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-top: 5px;
+  background: rgba(255,255,255,0.05);
+  color: inherit;
+}
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.btn-calc { background: var(--accent); color: #000; }
+.btn-download { background: var(--teal); color: #fff; margin: 5px; }
+.theme-btn {
+  float: right;
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.result {
+  margin-top: 20px;
+  border-radius: 12px;
+  padding: 15px;
+  background: rgba(255,255,255,0.05);
+}
+canvas { margin-top: 10px; border-radius: 10px; }
+.ad-slot {
+  border: 1px dashed #777;
+  margin: 25px auto;
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+}
+.affiliate {
+  display: block;
+  text-align: center;
+  background: var(--teal);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()">🌗 Theme</button>
+
+<div class="ad-slot">[Top Ad Placement]</div>
+
+<div class="container" id="sipBox">
+  <h1>SIP Calculator</h1>
+
+  <label>Monthly Investment (₹)</label>
+  <input type="number" id="monthly" placeholder="e.g. 5000">
+
+  <label>Expected Annual Return (%)</label>
+  <input type="number" id="return" placeholder="e.g. 12">
+
+  <label>Investment Period (Years)</label>
+  <input type="number" id="years" placeholder="e.g. 10">
+
+  <label>Target Amount (optional)</label>
+  <input type="number" id="goal" placeholder="e.g. 1000000">
+
+  <button class="btn-calc" onclick="calculateSIP()">Calculate</button>
+
+  <div class="result" id="result" style="display:none;">
+    <h3>Result:</h3>
+    <p id="invested"></p>
+    <p id="gain"></p>
+    <p id="total"></p>
+    <p id="goalCompare" style="color:var(--accent);font-weight:bold;"></p>
+
+    <canvas id="pieChart" width="300" height="200"></canvas>
+    <canvas id="lineChart" width="300" height="200"></canvas>
+
+    <a class="affiliate" href="https://your-affiliate-link.com" target="_blank">Start SIP Online 🚀</a>
+
+    <div id="downloadBtns" style="display:none;text-align:center;">
+      <button class="btn-download" onclick="downloadResult('png')">Download PNG</button>
+      <button class="btn-download" onclick="downloadResult('jpg')">Download JPG</button>
+      <button class="btn-download" onclick="downloadPDF()">Download PDF</button>
+      <button class="btn-download" onclick="downloadCSV()">Export CSV</button>
+    </div>
+  </div>
+</div>
+
+<div class="ad-slot">[Bottom Ad Placement]</div>
+
+<script>
+let chart1, chart2, isDark = true;
+
+function calculateSIP() {
+  const P = parseFloat(document.getElementById("monthly").value);
+  const annualRate = parseFloat(document.getElementById("return").value);
+  const years = parseFloat(document.getElementById("years").value);
+  const months = years * 12;
+  const goal = parseFloat(document.getElementById("goal").value);
+
+  if (isNaN(P) || isNaN(annualRate) || isNaN(years)) {
+    alert("Please fill all required fields!");
+    return;
+  }
+
+  const r = annualRate / 100 / 12;
+  const total = P * ((Math.pow(1 + r, months) - 1) / r) * (1 + r);
+  const invested = P * months;
+  const gain = total - invested;
+
+  document.getElementById("invested").innerText = `Invested: ₹${invested.toLocaleString()}`;
+  document.getElementById("gain").innerText = `Estimated Gain: ₹${gain.toLocaleString()}`;
+  document.getElementById("total").innerText = `Total Value: ₹${total.toLocaleString()}`;
+
+  if (goal > 0) {
+    const required = goal / (((Math.pow(1 + r, months) - 1) / r) * (1 + r));
+    document.getElementById("goalCompare").innerText = `To reach ₹${goal.toLocaleString()}, invest ₹${required.toFixed(2)} per month.`;
+  } else {
+    document.getElementById("goalCompare").innerText = "";
+  }
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("downloadBtns").style.display = "block";
+  drawCharts(invested, gain, P, r, months);
+}
+
+function drawCharts(invested, gain, P, r, months) {
+  if (chart1) chart1.destroy();
+  if (chart2) chart2.destroy();
+
+  const ctx1 = document.getElementById("pieChart").getContext("2d");
+  chart1 = new Chart(ctx1, {
+    type: "pie",
+    data: {
+      labels: ["Invested", "Gain"],
+      datasets: [{ data: [invested, gain], backgroundColor: ["#ffb400", "#0ea5a3"] }]
+    },
+    options: { plugins: { legend: { labels: { color: isDark ? "#fff" : "#000" } } } }
+  });
+
+  const ctx2 = document.getElementById("lineChart").getContext("2d");
+  const yearsList = [], values = [];
+  for (let i = 1; i <= months / 12; i++) {
+    const n = i * 12;
+    const value = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+    yearsList.push(`Year ${i}`);
+    values.push(value);
+  }
+  chart2 = new Chart(ctx2, {
+    type: "line",
+    data: {
+      labels: yearsList,
+      datasets: [{ label: "Total Value", data: values, borderColor: "#0ea5a3", backgroundColor: "rgba(14,165,163,0.2)", fill: true }]
+    },
+    options: { plugins: { legend: { labels: { color: isDark ? "#fff" : "#000" } } } }
+  });
+}
+
+function downloadResult(type) {
+  html2canvas(document.getElementById("sipBox"), { scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.href = type === "jpg" ? canvas.toDataURL("image/jpeg", 0.9) : canvas.toDataURL("image/png");
+    link.download = type === "jpg" ? "sip-result.jpg" : "sip-result.png";
+    link.click();
+  });
+}
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const el = document.getElementById("sipBox");
+  const canvas = await html2canvas(el, { scale: 2 });
+  const img = canvas.toDataURL("image/png");
+  pdf.addImage(img, "PNG", 10, 20, 180, 0);
+  pdf.save("sip-report.pdf");
+}
+
+function downloadCSV() {
+  const rows = [["Month", "Invested", "Interest", "Total"]];
+  const P = parseFloat(document.getElementById("monthly").value);
+  const r = parseFloat(document.getElementById("return").value) / 100 / 12;
+  const years = parseFloat(document.getElementById("years").value);
+  const months = years * 12;
+  let total = 0, invested = 0;
+  for (let i = 1; i <= months; i++) {
+    invested += P;
+    total = total * (1 + r) + P;
+    const interest = total - invested;
+    rows.push([i, invested.toFixed(2), interest.toFixed(2), total.toFixed(2)]);
+  }
+  let csv = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+  const link = document.createElement("a");
+  link.href = encodeURI(csv);
+  link.download = "sip-data.csv";
+  link.click();
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.style.background = isDark ? "var(--bg-dark)" : "var(--bg-light)";
+  document.body.style.color = isDark ? "var(--text-dark)" : "var(--text-light)";
+  document.querySelector(".container").style.background = isDark ? "var(--card-dark)" : "var(--card-light)";
+  if (chart1) chart1.options.plugins.legend.labels.color = isDark ? "#fff" : "#000", chart1.update();
+  if (chart2) chart2.options.plugins.legend.labels.color = isDark ? "#fff" : "#000", chart2.update();
+}
+</script>
+</body>
+</html>

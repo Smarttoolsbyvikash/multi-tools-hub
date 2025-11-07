@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add More Tools</title>
+<style>
+body{
+    background:#111;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:20px;
+}
+input,button{
+    width:80%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+}
+button{
+    background:yellow;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ✅ TOP AD -->
+<div style="border:2px dashed orange; margin:20px; text-align:center;">
+    [Top Ad Placement]
+</div>
+
+<h2>Add New Tool</h2>
+
+<input type="text" id="name" placeholder="Tool Name">
+<input type="text" id="icon" placeholder="Icon (emoji)">
+<input type="text" id="link" placeholder="Link (example: tools/mytool.html)">
+<button onclick="saveTool()">Add Tool</button>
+
+<!-- ✅ BOTTOM AD -->
+<div style="border:2px dashed orange; margin:20px; text-align:center;">
+    [Bottom Ad Placement]
+</div>
+
+<script>
+// store tool in localStorage
+function saveTool(){
+    let name = document.getElementById("name").value;
+    let icon = document.getElementById("icon").value;
+    let link = document.getElementById("link").value;
+
+    if(!name || !icon || !link){
+        alert("Fill all fields!");
+        return;
+    }
+
+    let tools = JSON.parse(localStorage.getItem("tools")) || [];
+    tools.push({name, icon, link});
+    localStorage.setItem("tools", JSON.stringify(tools));
+    alert("Tool Added!");
+}
+</script>
+
+</body>
+</html>
