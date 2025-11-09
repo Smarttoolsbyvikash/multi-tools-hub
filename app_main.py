@@ -18,7 +18,8 @@ os.makedirs(UPLOADS_DIR, exist_ok=True)
 # ------------------------
 @app.route('/')
 def home():
-    return send_from_directory(PARENT_DIR, 'index.html')
+    return send_from_directory(os.getcwd(), 'index.html')
+
 
 # ------------------------
 # 🔹 Universal HTML route (auto serve any .html file)
