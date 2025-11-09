@@ -1,0 +1,33 @@
+:root{
+  --bg:#071021; --bg2:#0b1830; --muted:#9aa3b2;
+  --gold:#FFD700; --gold2:#FFCF4A; --glass:rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--bg),var(--bg2));color:#eaf0ff;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial}
+.layout{max-width:1200px;margin:20px auto;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);box-shadow:0 30px 80px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.03)}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px}
+.brand{color:var(--gold);font-weight:900;font-size:20px}
+.top-actions a{color:var(--gold);text-decoration:none;font-weight:700}
+.header-ad{padding:10px 12px}
+.ad-placeholder{background:linear-gradient(90deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));padding:14px;border-radius:10px;color:var(--muted);text-align:center;border:1px dashed rgba(255,215,0,0.06)}
+.main-grid{display:grid;grid-template-columns:260px 1fr;gap:20px;padding:10px}
+@media(max-width:920px){.main-grid{grid-template-columns:1fr}}
+.leftnav{padding:8px;border-right:1px solid rgba(255,255,255,0.02)}
+.leftnav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.leftnav a{color:var(--gold);text-decoration:none;font-weight:700;padding:8px;border-radius:8px}
+.leftnav a:hover{background:rgba(255,215,0,0.04)}
+.sidebar-ad{margin-top:12px}
+.content{padding:4px 6px}
+.title{color:var(--gold)}
+.lead{color:var(--muted);margin-top:6px}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+.tool-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.02)}
+.tool-card h3{margin:0;color:var(--gold)}
+.tool-card p{color:var(--muted)}
+.btn{display:inline-block;padding:10px 12px;border-radius:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));color:#111;text-decoration:none;font-weight:800;margin-top:8px}
+.btn.disabled{opacity:0.5;cursor:not-allowed}
+.in-tool-ad{margin-top:20px}
+.site-footer{padding:14px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02);margin-top:18px}
+.footer-links a{color:var(--muted);text-decoration:none;margin-left:6px}
+
+/* small tool styles included in tool file itself; keep global compact */
