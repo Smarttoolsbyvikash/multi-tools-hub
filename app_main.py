@@ -11,11 +11,10 @@ PARENT_DIR = os.path.abspath(os.path.join(BASE_DIR, os.pardir))
 UPLOADS_DIR = os.path.join(PARENT_DIR, 'uploads')
 
 # Ensure folders exist
-os.makedirs(UPLOADS_DIR, exist_ok=True)
-# Serve Monetag sw.js from root
+# Serve sw.js from root
 @app.route('/sw.js')
 def monetag_sw():
-    return send_from_directory(PARENT_DIR, 'sw.js', mimetype='application/javascript')
+    return send_from_directory(os.getcwd(), 'sw.js', mimetype='application/javascript')
 
 # ------------------------
 # 🔹 Home route
