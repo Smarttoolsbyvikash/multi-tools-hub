@@ -3,7 +3,7 @@
   <script>
   window.addEventListener('load', () => {
     const checkScript = document.createElement('script');
-    checkScript.src = "https://cdn.monetag.com/monetag.js";
+    checkScript.src = "https://cdn.monetag.com/tag.js";
     checkScript.onload = () => console.log("✅ Monetag script loaded successfully!");
     checkScript.onerror = () => console.log("❌ Monetag script not loaded (check approval or CDN).");
     document.head.appendChild(checkScript);
