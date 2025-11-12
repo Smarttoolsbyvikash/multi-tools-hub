@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+  <script>
+  window.addEventListener('load', () => {
+    const checkScript = document.createElement('script');
+    checkScript.src = "https://cdn.monetag.com/monetag.js";
+    checkScript.onload = () => console.log("✅ Monetag script loaded successfully!");
+    checkScript.onerror = () => console.log("❌ Monetag script not loaded (check approval or CDN).");
+    document.head.appendChild(checkScript);
+  });
+</script>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Multi Tools Hub by Vikash</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="static/style.css">
 <script>
     (function(s,u,b,j,e,c,t){
         s[b]=s[b]||function(){(s[b].q=s[b].q||[]).push(arguments)};
