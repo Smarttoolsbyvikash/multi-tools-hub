@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Percentage Calculator - Smart Tools Hub</title>
+<style>
+:root{--bg:#0b0e13;--card:#151a22;--pri:#ffcc00;--mut:#9aa1ac}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Poppins,system-ui}
+.wrap{max-width:560px;margin:32px auto;padding:16px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:20px}
+h1{margin:6px 0 10px;color:var(--pri);font-size:26px;text-align:center}
+label{display:block;margin:10px 0 6px;font-weight:600}
+input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #2a3240;background:#0f131a;color:#fff}
+button{background:var(--pri);border:0;color:#000;font-weight:700;cursor:pointer;margin-top:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.out{margin-top:14px;padding:12px;border:1px dashed #2e3645;border-radius:12px;background:#0f141c}
+.ad-slot{margin:14px 0;padding:12px;border:1px dashed #444;border-radius:10px;text-align:center;color:var(--mut);font-size:14px}
+.footer{text-align:center;margin-top:24px;color:#9aa1ac;font-size:13px}
+</style></head><body>
+
+<div class="wrap">
+  <div class="card">
+
+    <h1>Percentage Calculator</h1>
+
+    <div class="ad-slot">[Top Ad Placement]</div>
+
+    <div class="grid">
+      <div><label>Obtained Marks</label><input id="obt" type="number" min="0" step="0.01" placeholder="e.g. 432"></div>
+      <div><label>Total Marks</label><input id="tot" type="number" min="0.01" step="0.01" placeholder="e.g. 500"></div>
+    </div>
+
+    <label>Round</label>
+    <select id="round">
+      <option value="2">2 decimals</option>
+      <option value="1">1 decimal</option>
+      <option value="0">No decimal</option>
+    </select>
+
+    <button onclick="calc()">Calculate</button>
+    <div class="out" id="out">Enter values and click calculate.</div>
+
+    <div class="ad-slot">[Bottom Ad Placement]</div>
+  </div>
+
+  <div class="footer">Made with ❤️ by Vikash</div>
+</div>
+
+<script>
+function fmt(n,d=2){return Number.isFinite(n)?n.toFixed(+d):'—'}
+function calc(){
+  const o=+obt.value,t=+tot.value,d=+round.value;
+  if(!(t>0)||!(o>=0)){out.textContent="Invalid numbers.";return}
+  const p=(o/t)*100;
+  out.innerHTML=`<b>${fmt(p,d)}%</b> of ${fmt(t,0)} (scored ${fmt(o,0)}).`;
+}
+</script>
+</body></html>
