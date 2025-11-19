@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>   
+<meta charset="UTF-8">
+<title>Unit Converter | Smart Multi Tools Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;padding:0;background:#020617;color:#f8fafc;font-family:Arial;}
+.container{max-width:850px;margin:auto;padding:20px;}
+a.back{color:#facc15;text-decoration:none;font-size:20px;}
+h1{color:#fde047;margin-top:10px;font-size:28px;}
+
+.card{
+  background:#0f172a;border-radius:18px;border:1px solid #334155;
+  padding:20px;margin-top:20px;box-shadow:0 12px 35px rgba(0,0,0,0.45);
+}
+
+label{font-size:13px;color:#cbd5f5;margin-bottom:4px;display:block;}
+input,select{
+  width:100%;padding:10px;border-radius:10px;margin-top:8px;
+  background:#020617;color:#e5e7eb;border:1px solid #475569;
+}
+button{
+  margin-top:15px;padding:10px 18px;border:none;border-radius:25px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+  background:linear-gradient(to right,#facc15,#f97316);
+  color:#111827;box-shadow:0 8px 20px rgba(250,204,21,0.5);
+}
+.result{
+  margin-top:15px;background:#020617;border:1px solid #475569;
+  padding:12px;border-radius:12px;font-size:15px;color:#fde68a;
+}
+.footer{text-align:center;margin-top:30px;color:#64748b;}
+.footer span{color:#facc15;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <a href="../index.html" class="back">⟵ Back</a>
+  <h1>📏 Unit Converter</h1>
+
+  <div class="card">
+
+    <label>Unit Type</label>
+    <select id="type" onchange="loadUnits()">
+      <option value="length">Length</option>
+      <option value="weight">Weight</option>
+      <option value="temperature">Temperature</option>
+      <option value="speed">Speed</option>
+      <option value="area">Area</option>
+      <option value="time">Time</option>
+    </select>
+
+    <label style="margin-top:15px;">From</label>
+    <select id="from"></select>
+
+    <label style="margin-top:15px;">To</label>
+    <select id="to"></select>
+
+    <label style="margin-top:15px;">Value</label>
+    <input type="number" id="value" placeholder="Enter value">
+
+    <button onclick="convertUnit()">Convert</button>
+
+    <div class="result" id="resultBox">Result will appear here…</div>
+
+  </div>
+
+  <div class="footer">Made with <span>❤</span> by Vikash · Smart Multi Tools Hub</div>
+
+</div>
+
+<script>
+const units = {
+  length:{ m:1, cm:100, km:0.001, inch:39.37, feet:3.281 },
+  weight:{ kg:1, g:1000, mg:1e6, pound:2.205 },
+  speed:{ "m/s":1, "km/h":3.6, "mph":2.237 },
+  time:{ sec:1, min:1/60, hour:1/3600 },
+  area:{ sqm:1, sqft:10.764, acre:0.000247 },
+  temperature:"special"
+};
+
+function loadUnits(){
+  const type = document.getElementById("type").value;
+  const from = document.getElementById("from");
+  const to = document.getElementById("to");
+
+  from.innerHTML = "";
+  to.innerHTML = "";
+
+  if(type === "temperature"){
+    ["Celsius","Fahrenheit","Kelvin"].forEach(u=>{
+      from.innerHTML += `<option value="${u}">${u}</option>`;
+      to.innerHTML += `<option value="${u}">${u}</option>`;
+    });
+    return;
+  }
+
+  for(let u in units[type]){
+    from.innerHTML += `<option value="${u}">${u}</option>`;
+    to.innerHTML += `<option value="${u}">${u}</option>`;
+  }
+}
+
+loadUnits();
+
+function convertUnit(){
+  const type = document.getElementById("type").value;
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+  const val = parseFloat(document.getElementById("value").value);
+
+  if(isNaN(val)){
+    document.getElementById("resultBox").textContent = "Please enter valid value.";
+    return;
+  }
+
+  let result = 0;
+
+  if(type === "temperature"){
+    result = convertTemp(from,to,val);
+  }else{
+    result = (val / units[type][from]) * units[type][to];
+  }
+
+  document.getElementById("resultBox").textContent = "Result: " + result.toFixed(4);
+}
+
+function convertTemp(f,t,v){
+  if(f === "Celsius"){ if(t==="Fahrenheit") return v*9/5+32;
+    if(t==="Kelvin") return v+273.15; return v; }
+
+  if(f === "Fahrenheit"){ if(t==="Celsius") return (v-32)*5/9;
+    if(t==="Kelvin") return (v-32)*5/9+273.15; return v; }
+
+  if(f === "Kelvin"){ if(t==="Celsius") return v-273.15;
+    if(t==="Fahrenheit") return (v-273.15)*9/5+32; return v; }
+}
+</script>
+
+</body>
+</html>

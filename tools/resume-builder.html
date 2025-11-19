@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>   
+  <meta charset="UTF-8" />
+  <title>AI Resume Builder | Smart Multi Tools Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-dark: #020617;
+      --card-bg: #020617;
+      --card-elevated: #020a23;
+      --accent: #facc15;
+      --accent-soft: rgba(250, 204, 21, 0.15);
+      --accent-strong: #fbbf24;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.4);
+      --error: #f97373;
+      --success: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0b1120 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 10px 32px;
+    }
+
+    .page-wrapper {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(5, 15, 35, 0.9);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.6);
+      border-color: var(--accent);
+      background: radial-gradient(circle at top, #111827, #020617);
+    }
+
+    .title-block {
+      margin-bottom: 16px;
+    }
+
+    .title-label {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-strong);
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: #fef9c3;
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.3);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .top-ad {
+      border-radius: 18px;
+      border: 1px dashed rgba(250, 204, 21, 0.7);
+      padding: 10px 14px;
+      margin: 16px 0 18px;
+      text-align: center;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-strong);
+      background: radial-gradient(circle at top, rgba(250, 204, 21, 0.08), transparent);
+    }
+
+    .card {
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.98),
+        rgba(2, 6, 23, 0.98)
+      );
+      border-radius: 24px;
+      padding: 16px 14px 18px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.85);
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        padding: 20px 22px 24px;
+      }
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1.1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Inputs */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #e5e7eb;
+      margin-bottom: 10px;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+    }
+
+    .field-group {
+      margin-bottom: 10px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .inline-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .inline-row > div {
+      flex: 1;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-main);
+      padding: 7px 10px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.4);
+    }
+
+    select {
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #e5e7eb 50%),
+        linear-gradient(135deg, #e5e7eb 50%, transparent 50%);
+      background-position: calc(100% - 14px) calc(50% - 3px),
+        calc(100% - 9px) calc(50% - 3px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .checkbox-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-soft);
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      margin-bottom: 10px;
+    }
+
+    .checkbox-row input {
+      accent-color: var(--accent);
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      border-radius: 999px;
+      padding: 7px 15px;
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease, opacity 0.12s ease, border-color 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at top left, #facc15, #f97316);
+      color: #111827;
+      font-weight: 600;
+      box-shadow: 0 12px 35px rgba(250, 204, 21, 0.55);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(250, 204, 21, 0.7);
+      filter: brightness(1.03);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.85);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .btn-primary,
+      .btn-secondary {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    /* Preview */
+    .preview-wrapper {
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: radial-gradient(circle at top left, #020617, #020617);
+      padding: 10px;
+      position: relative;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.9);
+    }
+
+    .preview-scroll {
+      max-height: 520px;
+      overflow: auto;
+      border-radius: 14px;
+      background: #0b1120;
+      padding: 12px;
+    }
+
+    /* Resume page (A4 ratio approx) */
+    .resume-page {
+      background: #f9fafb;
+      color: #111827;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 595px; /* A4 width at 72dpi */
+      min-height: 842px; /* A4 height */
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
+      padding: 24px 26px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    .resume-header {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .resume-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #111827;
+    }
+
+    .resume-role {
+      font-size: 12px;
+      color: #4b5563;
+      margin-top: 2px;
+    }
+
+    .resume-contact {
+      font-size: 11px;
+      color: #4b5563;
+      text-align: right;
+    }
+
+    .resume-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #111827;
+      margin-bottom: 4px;
+      padding-top: 6px;
+    }
+
+    .resume-section {
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: #374151;
+    }
+
+    .resume-section p {
+      margin-bottom: 3px;
+      white-space: pre-line;
+    }
+
+    .resume-list-item {
+      margin-bottom: 4px;
+    }
+
+    .resume-list-item-title {
+      font-weight: 600;
+      font-size: 11px;
+      color: #111827;
+    }
+
+    .resume-meta {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .badge-skill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 9px;
+      margin: 2px 3px 0 0;
+    }
+
+    /* Accent color variable */
+    .resume-accent {
+      height: 3px;
+      width: 80px;
+      border-radius: 999px;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      background: linear-gradient(90deg, #facc15, #f97316);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .footer span {
+      color: var(--accent-strong);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Top -->
+    <div class="top-bar">
+      <a href="index.html" class="back-btn" aria-label="Back to all tools">‹</a>
+      <div class="title-block">
+        <div class="title-label">Smart Multi Tools Hub</div>
+        <h1>AI Resume Builder</h1>
+        <div class="subtitle">
+          Job, internship ya fresher ke liye 5 min me professional resume banao – live preview + 1-click PDF download.
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad -->
+    <div class="top-ad">[ Top Ad Placement – 728×90 / 320×100 ]</div>
+
+    <!-- Card -->
+    <div class="card">
+      <div class="layout">
+        <!-- Left: Form -->
+        <div>
+          <div class="section-label">Step 1 – Details fill karo</div>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span>Fresher / Experienced – dono ke liye</span>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Full Name</div>
+            <input type="text" id="fullName" placeholder="Vikash Kumar" />
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Job Title / Role</div>
+            <input
+              type="text"
+              id="jobTitle"
+              placeholder="Front-End Developer / Data Analyst"
+            />
+          </div>
+
+          <div class="inline-row">
+            <div class="field-group">
+              <div class="field-label">Email</div>
+              <input type="email" id="email" placeholder="you@example.com" />
+            </div>
+            <div class="field-group">
+              <div class="field-label">Phone</div>
+              <input type="tel" id="phone" placeholder="+91-XXXXXXXXXX" />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Location</div>
+            <input type="text" id="location" placeholder="Delhi, India" />
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Summary / Objective</div>
+            <textarea
+              id="summary"
+              placeholder="Short summary about you, skills and goals."
+            ></textarea>
+            <div class="helper-text">
+              2–3 lines me short professional summary likho.
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Skills (comma separated)</div>
+            <input
+              type="text"
+              id="skills"
+              placeholder="HTML, CSS, JavaScript, React, MS Excel"
+            />
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Experience (optional)</div>
+            <textarea
+              id="experience"
+              placeholder="[Company] – Role – Duration
+• Bullet points me work likho
+• Achievements, tools, technologies"
+            ></textarea>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Education</div>
+            <textarea
+              id="education"
+              placeholder="[Degree] – [College] – [Year]
+12th – [Board] – [Year]"
+            ></textarea>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Projects (optional)</div>
+            <textarea
+              id="projects"
+              placeholder="Project name – short description, tools, link"
+            ></textarea>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label">Links (optional)</div>
+            <textarea
+              id="links"
+              placeholder="GitHub, Portfolio, LinkedIn etc."
+            ></textarea>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="showLinks" checked />
+            <span>Links section show kare</span>
+          </label>
+
+          <div class="field-group">
+            <div class="field-label">Template style</div>
+            <select id="templateStyle">
+              <option value="classic">Classic (clean)</option>
+              <option value="bold">Bold header</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" type="button" id="fillSampleBtn">
+              ✨ Fill sample data
+            </button>
+            <button class="btn-secondary" type="button" id="clearFormBtn">
+              Reset form
+            </button>
+          </div>
+          <div class="helper-text">
+            Note: Data sirf aapke browser me hai, server pe store nahi hota.
+          </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div>
+          <div class="section-label">Step 2 – Preview & PDF</div>
+          <div class="preview-wrapper">
+            <div class="preview-header">
+              <span>Live Preview (A4)</span>
+              <div class="chip">
+                <span class="chip-dot"></span>
+                <span id="previewStatus">Auto update ON</span>
+              </div>
+            </div>
+            <div class="preview-scroll">
+              <div id="resumePreview" class="resume-page">
+                <!-- Filled by JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top: 10px;">
+            <button class="btn-primary" type="button" id="downloadPdfBtn">
+              📄 Download PDF
+            </button>
+            <button class="btn-secondary" type="button" id="copyTextBtn">
+              📋 Copy as text
+            </button>
+          </div>
+          <div class="helper-text">
+            Tip: Pehle form me details fill karo, phir PDF download karo.  
+            Is resume ko job portals, WhatsApp, email sab me use kar sakte ho.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Made with <span>❤</span> by Vikash · Smart Multi Tools Hub
+    </div>
+  </div>
+
+  <!-- html2pdf for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-YcsIPGdh8UqX0AcdpShUMHbOWcZH/5LiCFYI8aAizI0s5momkGumZ5qX6Ch12HaxJXhMHDL/95B2S/bjK5Qmlg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    const fields = {
+      fullName: document.getElementById("fullName"),
+      jobTitle: document.getElementById("jobTitle"),
+      email: document.getElementById("email"),
+      phone: document.getElementById("phone"),
+      location: document.getElementById("location"),
+      summary: document.getElementById("summary"),
+      skills: document.getElementById("skills"),
+      experience: document.getElementById("experience"),
+      education: document.getElementById("education"),
+      projects: document.getElementById("projects"),
+      links: document.getElementById("links"),
+    };
+
+    const showLinks = document.getElementById("showLinks");
+    const templateStyle = document.getElementById("templateStyle");
+    const resumePreview = document.getElementById("resumePreview");
+    const previewStatus = document.getElementById("previewStatus");
+
+    const fillSampleBtn = document.getElementById("fillSampleBtn");
+    const clearFormBtn = document.getElementById("clearFormBtn");
+    const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+    const copyTextBtn = document.getElementById("copyTextBtn");
+
+    function escapeHTML(str) {
+      return (str || "").replace(/[&<>"']/g, function (m) {
+        return (
+          {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          }[m] || m
+        );
+      });
+    }
+
+    function listFromText(text) {
+      if (!text) return "";
+      const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+      if (!lines.length) return "";
+      return lines
+        .map(
+          (line) =>
+            '<div class="resume-list-item"><div>' +
+            escapeHTML(line) +
+            "</div></div>"
+        )
+        .join("");
+    }
+
+    function badgesFromCSV(text) {
+      if (!text) return "";
+      return text
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map((skill) => '<span class="badge-skill">' + escapeHTML(skill) + "</span>")
+        .join("");
+    }
+
+    function getTemplateAccent(style) {
+      if (style === "bold") {
+        return 'background: linear-gradient(90deg, #0f172a, #111827); color:#f9fafb;';
+      }
+      if (style === "minimal") {
+        return "background:#ffffff;color:#111827;";
+      }
+      return "background:#f9fafb;color:#111827;";
+    }
+
+    function renderResume() {
+      const name = escapeHTML(fields.fullName.value) || "Your Name";
+      const jobTitle = escapeHTML(fields.jobTitle.value) || "Job Title";
+      const email = escapeHTML(fields.email.value);
+      const phone = escapeHTML(fields.phone.value);
+      const location = escapeHTML(fields.location.value);
+
+      const summary = escapeHTML(fields.summary.value);
+      const skillsBadges = badgesFromCSV(fields.skills.value);
+      const experienceList = listFromText(fields.experience.value);
+      const educationList = listFromText(fields.education.value);
+      const projectsList = listFromText(fields.projects.value);
+      const linksList = listFromText(fields.links.value);
+
+      const style = templateStyle.value;
+      const headerStyle = getTemplateAccent(style);
+
+      previewStatus.textContent = "Auto update ON";
+
+      resumePreview.innerHTML = `
+        <div class="resume-header" style="${headerStyle}">
+          <div>
+            <div class="resume-name">${name}</div>
+            <div class="resume-role">${jobTitle}</div>
+            <div class="resume-accent"></div>
+          </div>
+          <div class="resume-contact">
+            ${
+              email
+                ? `<div>${email}</div>`
+                : ""
+            }
+            ${
+              phone
+                ? `<div>${phone}</div>`
+                : ""
+            }
+            ${
+              location
+                ? `<div>${location}</div>`
+                : ""
+            }
+          </div>
+        </div>
+
+        <div class="resume-section">
+          <div class="resume-section-title">Profile</div>
+          <p>${summary || "Short professional summary will appear here."}</p>
+        </div>
+
+        ${
+          skillsBadges
+            ? `<div class="resume-section">
+                <div class="resume-section-title">Skills</div>
+                <div>${skillsBadges}</div>
+              </div>`
+            : ""
+        }
+
+        ${
+          experienceList
+            ? `<div class="resume-section">
+                <div class="resume-section-title">Experience</div>
+                ${experienceList}
+              </div>`
+            : ""
+        }
+
+        ${
+          educationList
+            ? `<div class="resume-section">
+                <div class="resume-section-title">Education</div>
+                ${educationList}
+              </div>`
+            : ""
+        }
+
+        ${
+          projectsList
+            ? `<div class="resume-section">
+                <div class="resume-section-title">Projects</div>
+                ${projectsList}
+              </div>`
+            : ""
+        }
+
+        ${
+          showLinks.checked && linksList
+            ? `<div class="resume-section">
+                <div class="resume-section-title">Links</div>
+                ${linksList}
+              </div>`
+            : ""
+        }
+      `;
+    }
+
+    // Update on input
+    Object.values(fields).forEach((input) => {
+      input.addEventListener("input", renderResume);
+    });
+    showLinks.addEventListener("change", renderResume);
+    templateStyle.addEventListener("change", renderResume);
+
+    // Sample data
+    fillSampleBtn.addEventListener("click", () => {
+      fields.fullName.value = "Vikash Kumar";
+      fields.jobTitle.value = "Front-End Web Developer";
+      fields.email.value = "vikash@example.com";
+      fields.phone.value = "+91-9876543210";
+      fields.location.value = "Patna, Bihar, India";
+      fields.summary.value =
+        "Passionate front-end developer with strong skills in HTML, CSS, JavaScript and React.\nFocused on building fast, responsive and user-friendly web experiences.";
+      fields.skills.value =
+        "HTML, CSS, Tailwind, JavaScript, React, Git, Responsive Design";
+      fields.experience.value =
+        "Smart Multi Tools Hub – Creator – 2025\n• Built multiple online tools like PDF converter, background remover, calculators.\n• Improved page performance and SEO for better traffic.\n";
+      fields.education.value =
+        "B.Sc (Computer Science) – XYZ College – 2022\n12th – CBSE – 2019";
+      fields.projects.value =
+        "Smart Multi Tools Hub – Collection of productivity tools for students & creators.\nResponsive Portfolio Website – Personal portfolio with projects and contact form.";
+      fields.links.value =
+        "GitHub: github.com/vikash\nPortfolio: smartmultitoolshub.com\nLinkedIn: linkedin.com/in/vikash";
+      renderResume();
+    });
+
+    clearFormBtn.addEventListener("click", () => {
+      Object.values(fields).forEach((input) => (input.value = ""));
+      renderResume();
+    });
+
+    // PDF download
+    downloadPdfBtn.addEventListener("click", () => {
+      const element = resumePreview;
+      const fileName =
+        (fields.fullName.value || "resume").replace(/\s+/g, "-").toLowerCase() +
+        "-smartmulti.pdf";
+
+      const opt = {
+        margin: [0.4, 0.4, 0.4, 0.4],
+        filename: fileName,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      };
+
+      html2pdf().set(opt).from(element).save();
+    });
+
+    // Copy as text
+    copyTextBtn.addEventListener("click", async () => {
+      const parts = [];
+      if (fields.fullName.value) parts.push(fields.fullName.value.toUpperCase());
+      if (fields.jobTitle.value) parts.push(fields.jobTitle.value);
+      if (fields.email.value || fields.phone.value || fields.location.value) {
+        parts.push(
+          [fields.email.value, fields.phone.value, fields.location.value]
+            .filter(Boolean)
+            .join(" | ")
+        );
+      }
+      if (fields.summary.value) {
+        parts.push("\nSUMMARY\n" + fields.summary.value);
+      }
+      if (fields.skills.value) {
+        parts.push("\nSKILLS\n" + fields.skills.value);
+      }
+      if (fields.experience.value) {
+        parts.push("\nEXPERIENCE\n" + fields.experience.value);
+      }
+      if (fields.education.value) {
+        parts.push("\nEDUCATION\n" + fields.education.value);
+      }
+      if (fields.projects.value) {
+        parts.push("\nPROJECTS\n" + fields.projects.value);
+      }
+      if (showLinks.checked && fields.links.value) {
+        parts.push("\nLINKS\n" + fields.links.value);
+      }
+
+      const text = parts.join("\n");
+      try {
+        await navigator.clipboard.writeText(text);
+        previewStatus.textContent = "Text copied ✅";
+      } catch (e) {
+        previewStatus.textContent = "Copy failed – manually select text.";
+      }
+    });
+
+    // Initial render
+    renderResume();
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>   
+<meta charset="UTF-8">
+<title>Typing Speed Test | Smart Multi Tools Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+body{margin:0;padding:0;background:#020617;color:#f8fafc;font-family:Arial, sans-serif;}
+.container{max-width:850px;margin:auto;padding:20px;}
+a.back{color:#facc15;text-decoration:none;font-size:20px;}
+h1{margin-top:10px;font-size:28px;color:#fde047;}
+.card{
+  background:#0f172a;border:1px solid #334155;border-radius:18px;
+  padding:20px;margin-top:20px;box-shadow:0 12px 35px rgba(0,0,0,0.45);
+}
+label{font-size:13px;color:#cbd5f5;margin-bottom:4px;display:block;}
+select{
+  width:100%;padding:8px 10px;border-radius:10px;border:1px solid #475569;
+  background:#020617;color:#e5e7eb;
+}
+.typing-text{
+  background:#020617;border:1px dashed #475569;border-radius:12px;
+  padding:10px;font-size:14px;line-height:1.5;margin-top:12px;
+}
+.typing-text span.current{background:rgba(250,204,21,0.25);border-radius:4px;}
+.typing-text span.correct{color:#4ade80;}
+.typing-text span.wrong{color:#f97373;text-decoration:underline;}
+
+input.typing-input{
+  width:100%;margin-top:10px;padding:9px 10px;border-radius:12px;
+  border:1px solid #475569;background:#020617;color:#f8fafc;
+}
+input.typing-input:focus{border-color:#facc15;outline:none;box-shadow:0 0 6px #facc15;}
+
+button{
+  padding:10px 18px;border:none;border-radius:25px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+}
+.btn-main{
+  background:linear-gradient(to right,#facc15,#f97316);
+  color:#111827;box-shadow:0 8px 20px rgba(250,204,21,0.5);
+}
+.btn-ghost{
+  background:#111827;border:1px solid #475569;color:#e5e7eb;
+}
+.btn-main:disabled{opacity:0.4;cursor:not-allowed;}
+
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:12px;}
+.stat-pill{
+  padding:4px 10px;border-radius:999px;background:#020617;
+  border:1px solid #475569;color:#e5e7eb;
+}
+.status{margin-top:8px;font-size:12px;color:#9ca3af;}
+.footer{text-align:center;margin-top:30px;color:#64748b;font-size:13px;}
+.footer span{color:#facc15;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">⟵ Back</a>
+  <h1>⌨ Typing Speed Test</h1>
+
+  <div class="card">
+    <label for="duration">Test duration</label>
+    <select id="duration">
+      <option value="30">30 seconds</option>
+      <option value="60" selected>60 seconds</option>
+      <option value="120">120 seconds</option>
+    </select>
+
+    <div id="text" class="typing-text"></div>
+
+    <input id="input" class="typing-input"
+           placeholder="Start test dabane ke baad yahan type karo..."
+           disabled />
+
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button id="startBtn" class="btn-main">▶ Start test</button>
+      <button id="resetBtn" class="btn-ghost">Reset</button>
+    </div>
+
+    <div class="stats">
+      <div id="timerStat" class="stat-pill">Time: 0 s</div>
+      <div id="wpmStat" class="stat-pill">WPM: 0</div>
+      <div id="accStat" class="stat-pill">Accuracy: 0%</div>
+      <div id="charsStat" class="stat-pill">Chars typed: 0</div>
+    </div>
+
+    <div id="status" class="status">
+      Start button dabate hi timer chalega. Text ko exactly same type karo.
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with <span>❤</span> by Vikash · Smart Multi Tools Hub
+  </div>
+</div>
+
+<script>
+const textEl = document.getElementById("text");
+const inputEl = document.getElementById("input");
+const durationEl = document.getElementById("duration");
+const startBtn = document.getElementById("startBtn");
+const resetBtn = document.getElementById("resetBtn");
+const timerStat = document.getElementById("timerStat");
+const wpmStat = document.getElementById("wpmStat");
+const accStat = document.getElementById("accStat");
+const charsStat = document.getElementById("charsStat");
+const statusEl = document.getElementById("status");
+
+const samples = [
+  "Smart Multi Tools Hub helps you save time with simple online tools.",
+  "Practice typing daily to improve speed and accuracy for exams and jobs.",
+  "Background remover, resume builder and PDF tools make your workflow easy."
+];
+
+let target = "";
+let totalTime = 60;
+let timeLeft = 0;
+let timerId = null;
+let started = false;
+let typedChars = 0;
+let correctChars = 0;
+
+function pickSample() {
+  target = samples[Math.floor(Math.random() * samples.length)];
+  textEl.innerHTML = target
+    .split("")
+    .map((ch, idx) => `<span${idx === 0 ? ' class="current"' : ""}>${ch}</span>`)
+    .join("");
+}
+function resetTest() {
+  clearInterval(timerId);
+  timerId = null;
+  started = false;
+  totalTime = parseInt(durationEl.value, 10);
+  timeLeft = totalTime;
+  typedChars = 0;
+  correctChars = 0;
+  inputEl.value = "";
+  inputEl.disabled = true;
+  timerStat.textContent = "Time: 0 s";
+  wpmStat.textContent = "WPM: 0";
+  accStat.textContent = "Accuracy: 0%";
+  charsStat.textContent = "Chars typed: 0";
+  statusEl.textContent = "Start button dabate hi timer chalega. Text ko exactly same type karo.";
+  pickSample();
+}
+function updateHighlights() {
+  const entered = inputEl.value;
+  const spans = textEl.querySelectorAll("span");
+  typedChars = entered.length;
+  correctChars = 0;
+
+  spans.forEach((span, idx) => {
+    span.className = "";
+    const ch = entered[idx];
+    if (ch == null) return;
+    if (ch === span.textContent) {
+      span.classList.add("correct");
+      correctChars++;
+    } else {
+      span.classList.add("wrong");
+    }
+  });
+  const nextIndex = entered.length;
+  if (spans[nextIndex]) spans[nextIndex].classList.add("current");
+
+  charsStat.textContent = "Chars typed: " + typedChars;
+
+  const elapsed = totalTime - timeLeft;
+  if (elapsed > 0) {
+    const words = typedChars / 5;
+    const wpm = Math.round((words / elapsed) * 60);
+    wpmStat.textContent = "WPM: " + (isFinite(wpm) ? wpm : 0);
+  }
+  const accuracy = typedChars > 0 ? Math.round((correctChars / typedChars) * 100) : 0;
+  accStat.textContent = "Accuracy: " + accuracy + "%";
+}
+function startTimer() {
+  timeLeft = totalTime;
+  timerStat.textContent = "Time: " + timeLeft + " s";
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerStat.textContent = "Time: " + timeLeft + " s";
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      inputEl.disabled = true;
+      statusEl.textContent = "Time up! Practice daily to improve typing.";
+    }
+  }, 1000);
+}
+
+inputEl.addEventListener("input", () => {
+  if (!started) {
+    started = true;
+    startTimer();
+    statusEl.textContent = "Test chal raha hai... type karte raho.";
+  }
+  updateHighlights();
+});
+startBtn.addEventListener("click", () => {
+  resetTest();
+  inputEl.disabled = false;
+  inputEl.focus();
+});
+resetBtn.addEventListener("click", resetTest);
+durationEl.addEventListener("change", resetTest);
+
+pickSample();
+</script>
+</body>
+</html>

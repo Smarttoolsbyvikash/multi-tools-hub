@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>   
+<meta charset="UTF-8">
+<title>Measurement Calculator | Smart Multi Tools Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;padding:0;background:#020617;color:#f8fafc;font-family:Arial;}
+.container{max-width:850px;margin:auto;padding:20px;}
+a.back{color:#facc15;text-decoration:none;font-size:20px;}
+h1{color:#fde047;margin-top:10px;font-size:28px;}
+
+.card{
+  background:#0f172a;border-radius:18px;border:1px solid #334155;
+  padding:20px;margin-top:20px;text-align:left;
+  box-shadow:0 12px 35px rgba(0,0,0,0.45);
+}
+
+label{font-size:13px;color:#cbd5f5;margin-bottom:4px;display:block;margin-top:10px;}
+input{
+  width:100%;padding:10px;border-radius:10px;margin-top:5px;
+  background:#020617;color:#e5e7eb;border:1px solid #475569;
+}
+button{
+  margin-top:15px;padding:10px 18px;border:none;border-radius:25px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+  background:linear-gradient(to right,#facc15,#f97316);
+  color:#111827;box-shadow:0 8px 20px rgba(250,204,21,0.5);
+}
+
+.result{
+  margin-top:15px;background:#020617;border:1px solid #475569;
+  padding:12px;border-radius:12px;font-size:15px;color:#fde68a;
+  white-space:pre-line;
+}
+
+.footer{text-align:center;margin-top:30px;color:#64748b;}
+.footer span{color:#facc15;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <a href="../index.html" class="back">⟵ Back</a>
+
+  <h1>📏 Measurement Calculator</h1>
+
+
+  <!-- LENGTH CONVERTER -->
+  <div class="card">
+    <h2 style="color:#fde047;font-size:20px;margin-bottom:10px;">Length Converter</h2>
+
+    <label>Enter length (cm)</label>
+    <input type="number" id="cmValue" placeholder="e.g. 170">
+
+    <button onclick="convertLength()">Convert</button>
+
+    <div class="result" id="lengthResult">Result will appear here…</div>
+
+    <button onclick="downloadLength()">Download Result</button>
+  </div>
+
+
+
+  <!-- HEIGHT CONVERTER -->
+  <div class="card">
+    <h2 style="color:#fde047;font-size:20px;margin-bottom:10px;">Height Converter (feet/inch → cm)</h2>
+
+    <label>Feet</label>
+    <input type="number" id="feet" placeholder="e.g. 5">
+
+    <label>Inches</label>
+    <input type="number" id="inch" placeholder="e.g. 8">
+
+    <button onclick="convertHeight()">Convert Height</button>
+
+    <div class="result" id="heightResult">Result will appear here…</div>
+
+    <button onclick="downloadHeight()">Download Result</button>
+  </div>
+
+
+
+  <!-- AREA CALCULATOR -->
+  <div class="card">
+    <h2 style="color:#fde047;font-size:20px;">Area Calculator (Length × Width)</h2>
+
+    <label>Length (meter)</label>
+    <input type="number" id="len" placeholder="e.g. 12">
+
+    <label>Width (meter)</label>
+    <input type="number" id="wid" placeholder="e.g. 10">
+
+    <button onclick="calcArea()">Calculate Area</button>
+
+    <div class="result" id="areaResult">Result will appear here…</div>
+
+    <button onclick="downloadArea()">Download Result</button>
+  </div>
+
+
+
+  <!-- VOLUME CALCULATOR -->
+  <div class="card">
+    <h2 style="color:#fde047;font-size:20px;">Volume Calculator (L × W × H)</h2>
+
+    <label>Length (meter)</label>
+    <input type="number" id="vlen" placeholder="e.g. 5">
+
+    <label>Width (meter)</label>
+    <input type="number" id="vwid" placeholder="e.g. 4">
+
+    <label>Height (meter)</label>
+    <input type="number" id="vhgt" placeholder="e.g. 3">
+
+    <button onclick="calcVolume()">Calculate Volume</button>
+
+    <div class="result" id="volumeResult">Result will appear here…</div>
+
+    <button onclick="downloadVolume()">Download Result</button>
+  </div>
+
+
+  <div class="footer">
+    Made with <span>❤</span> by Vikash · Smart Multi Tools Hub
+  </div>
+
+</div>
+
+
+<script>
+function convertLength(){
+  let cm = parseFloat(document.getElementById("cmValue").value);
+  if(isNaN(cm)){ alert("Enter valid cm value"); return; }
+
+  let feet = (cm / 30.48).toFixed(2);
+  let inches = (cm / 2.54).toFixed(2);
+
+  document.getElementById("lengthResult").textContent =
+    `CM: ${cm}
+Feet: ${feet}
+Inches: ${inches}`;
+}
+
+function downloadLength(){
+  let text = document.getElementById("lengthResult").textContent;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type:"text/plain"}));
+  a.download = "length-result.txt";
+  a.click();
+}
+
+
+
+
+function convertHeight(){
+  let f = parseFloat(document.getElementById("feet").value);
+  let i = parseFloat(document.getElementById("inch").value);
+
+  if(isNaN(f) || isNaN(i)){ alert("Enter valid numbers"); return; }
+
+  let cm = ((f * 12) + i) * 2.54;
+
+  document.getElementById("heightResult").textContent =
+    `Feet: ${f}
+Inch: ${i}
+Height in CM: ${cm.toFixed(2)}`;
+}
+
+function downloadHeight(){
+  let text = document.getElementById("heightResult").textContent;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type:"text/plain"}));
+  a.download = "height-result.txt";
+  a.click();
+}
+
+
+
+function calcArea(){
+  let L = parseFloat(document.getElementById("len").value);
+  let W = parseFloat(document.getElementById("wid").value);
+
+  if(isNaN(L) || isNaN(W)){ alert("Enter valid numbers"); return; }
+
+  let area = L * W;
+
+  document.getElementById("areaResult").textContent =
+    `Length: ${L} m
+Width: ${W} m
+Area: ${area} sq. meter`;
+}
+
+function downloadArea(){
+  let text = document.getElementById("areaResult").textContent;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type:"text/plain"}));
+  a.download = "area-result.txt";
+  a.click();
+}
+
+
+
+
+
+function calcVolume(){
+  let L = parseFloat(document.getElementById("vlen").value);
+  let W = parseFloat(document.getElementById("vwid").value);
+  let H = parseFloat(document.getElementById("vhgt").value);
+
+  if(isNaN(L) || isNaN(W) || isNaN(H)){ alert("Enter valid numbers"); return; }
+
+  let volume = L * W * H;
+
+  document.getElementById("volumeResult").textContent =
+    `Length: ${L} m
+Width: ${W} m
+Height: ${H} m
+Volume: ${volume} cubic meter`;
+}
+
+function downloadVolume(){
+  let text = document.getElementById("volumeResult").textContent;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type:"text/plain"}));
+  a.download = "volume-result.txt";
+  a.click();
+}
+
+</script>
+
+
+</body>
+</html>
+

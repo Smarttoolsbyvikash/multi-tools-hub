@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>    
+<meta charset="UTF-8">
+<title>Language Translator | Smart Multi Tools Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;padding:0;background:#020617;color:#f8fafc;font-family:Arial;}
+.container{max-width:900px;margin:auto;padding:20px;}
+a.back{color:#facc15;font-size:20px;text-decoration:none;}
+h1{color:#fde047;font-size:28px;margin-top:10px;}
+
+.card{
+  background:#0f172a;border:1px solid #334155;border-radius:18px;
+  padding:20px;margin-top:20px;box-shadow:0 10px 35px rgba(0,0,0,0.45);
+}
+
+textarea{
+  width:100%;height:140px;padding:10px;border-radius:12px;
+  border:1px solid #475569;background:#020617;color:#e5e7eb;
+}
+
+select{
+  width:100%;padding:10px;border-radius:10px;margin-bottom:15px;
+  background:#020617;color:#e5e7eb;border:1px solid #475569;
+}
+
+button{
+  margin-top:15px;padding:10px 18px;border:none;border-radius:25px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+  background:linear-gradient(to right,#facc15,#f97316);
+  color:#111827;box-shadow:0 8px 20px rgba(250,204,21,0.5);
+}
+
+.output{
+  margin-top:15px;background:#020617;border:1px solid #475569;
+  padding:12px;border-radius:12px;font-size:15px;color:#fde68a;
+  min-height:80px;white-space:pre-line;
+}
+
+.footer{text-align:center;margin-top:30px;color:#64748b;}
+.footer span{color:#facc15;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <a href="../index.html" class="back">⟵ Back</a>
+
+  <h1>🌐 Language Translator</h1>
+
+  <div class="card">
+
+    <label>Translation Mode</label>
+    <select id="mode">
+      <option value="offline">Offline (Fast & Safe)</option>
+      <option value="online">Online (Accurate)</option>
+    </select>
+
+    <label>From Language</label>
+    <select id="fromLang">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+    </select>
+
+    <label>To Language</label>
+    <select id="toLang">
+      <option value="hi">Hindi</option>
+      <option value="en">English</option>
+    </select>
+
+    <textarea id="inputText" placeholder="Enter text to translate..."></textarea>
+
+    <button onclick="translateNow()">Translate</button>
+
+    <div class="output" id="outputBox">Translation will appear here…</div>
+
+    <div style="margin-top:10px;display:flex;gap:8px;">
+      <button onclick="copyOutput()">Copy</button>
+      <button onclick="downloadText()">Download</button>
+    </div>
+
+  </div>
+
+  <div class="footer">Made with <span>❤</span> by Vikash · Smart Multi Tools Hub</div>
+</div>
+
+<script>
+// Offline dictionary
+const engToHin = {
+  "hello":"नमस्ते", "thanks":"धन्यवाद", "please":"कृपया",
+  "friend":"दोस्त", "water":"पानी", "good":"अच्छा",
+  "love":"प्यार", "time":"समय", "book":"किताब",
+};
+const hinToEng = Object.fromEntries(Object.entries(engToHin).map(([a,b])=>[b,a]));
+
+
+// SAFE blocked words
+const banned = ["kill","attack","hurt","dead"];
+
+
+
+async function translateNow(){
+  const mode = document.getElementById("mode").value;
+  const from = document.getElementById("fromLang").value;
+  const to = document.getElementById("toLang").value;
+  let text = document.getElementById("inputText").value.trim().toLowerCase();
+
+  if(!text){
+    document.getElementById("outputBox").textContent = "Enter text first.";
+    return;
+  }
+
+  // block harmful words
+  for(let b of banned){
+    if(text.includes(b)){
+      document.getElementById("outputBox").textContent =
+        "⚠ Safety: Cannot translate this word.";
+      return;
+    }
+  }
+
+  if(mode === "offline"){
+    translateOffline(text, from, to);
+  }
+  else{
+    await translateOnline(text, from, to);
+  }
+}
+
+
+
+// ------------------ OFFLINE MODE ------------------
+function translateOffline(text, from, to){
+  let words = text.split(" ");
+  let result = [];
+
+  for(let w of words){
+    if(from==="en" && to==="hi") result.push(engToHin[w] || w);
+    else if(from==="hi" && to==="en") result.push(hinToEng[w] || w);
+    else result.push(w);
+  }
+
+  document.getElementById("outputBox").textContent = result.join(" ");
+}
+
+
+
+// ------------------ ONLINE MODE ------------------
+async function translateOnline(text, from, to){
+  try{
+    let url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+    let res = await fetch(url);
+    let data = await res.json();
+    let out = data.responseData.translatedText;
+
+    if(out)
+      document.getElementById("outputBox").textContent = out;
+    else
+      document.getElementById("outputBox").textContent = "Online translation failed.";
+
+  }catch(e){
+    document.getElementById("outputBox").textContent = "⚠ Internet required for online mode.";
+  }
+}
+
+
+
+// Copy
+function copyOutput(){
+  navigator.clipboard.writeText(document.getElementById("outputBox").textContent);
+  alert("Copied!");
+}
+
+// Download
+function downloadText(){
+  const text = document.getElementById("outputBox").textContent;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text],{type:"text/plain"}));
+  a.download = "translation.txt";
+  a.click();
+}
+</script>
+
+</body>
+</html>

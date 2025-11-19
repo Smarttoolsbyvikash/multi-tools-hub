@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type='text/javascript' src='//pl28051717.effectivegatecpm.com/89/32/cd/8932cdbe41c05959124bb2b9457ace73.js'></script>    
+<meta charset="UTF-8">
+<title>Word Counter | Smart Multi Tools Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+body{margin:0;padding:0;background:#020617;color:#f8fafc;font-family:Arial,sans-serif;}
+.container{max-width:850px;margin:auto;padding:20px;}
+a.back{color:#facc15;text-decoration:none;font-size:20px;}
+h1{margin-top:10px;font-size:28px;color:#fde047;}
+.card{
+  background:#0f172a;border:1px solid #334155;border-radius:18px;
+  padding:20px;margin-top:20px;box-shadow:0 12px 35px rgba(0,0,0,0.45);
+}
+label{font-size:13px;color:#cbd5f5;margin-bottom:4px;display:block;}
+textarea{
+  width:100%;height:220px;padding:10px;border-radius:12px;
+  border:1px solid #475569;background:#020617;color:#e5e7eb;
+  resize:vertical;
+}
+textarea:focus{outline:none;border-color:#facc15;box-shadow:0 0 6px #facc15;}
+.stats{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;font-size:12px;}
+.stat-pill{
+  padding:4px 10px;border-radius:999px;background:#020617;
+  border:1px solid #475569;color:#e5e7eb;
+}
+button{
+  margin-top:12px;padding:9px 16px;border:none;border-radius:25px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+}
+.btn-main{
+  background:linear-gradient(to right,#facc15,#f97316);
+  color:#111827;box-shadow:0 8px 20px rgba(250,204,21,0.5);
+}
+.btn-ghost{
+  background:#111827;border:1px solid #475569;color:#e5e7eb;
+}
+.footer{text-align:center;margin-top:30px;color:#64748b;font-size:13px;}
+.footer span{color:#facc15;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">⟵ Back</a>
+  <h1>📝 Word Counter</h1>
+
+  <div class="card">
+    <label for="text">Text</label>
+    <textarea id="text" placeholder="Yahan apna paragraph, essay ya content paste karo..."></textarea>
+
+    <div class="stats">
+      <div id="wStat" class="stat-pill">Words: 0</div>
+      <div id="cStat" class="stat-pill">Characters: 0</div>
+      <div id="sStat" class="stat-pill">Sentences: 0</div>
+      <div id="pStat" class="stat-pill">Paragraphs: 0</div>
+      <div id="rStat" class="stat-pill">Reading time: 0 min</div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-main" onclick="copyText()">Copy text</button>
+      <button class="btn-ghost" onclick="clearText()">Clear</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with <span>❤</span> by Vikash · Smart Multi Tools Hub
+  </div>
+</div>
+
+<script>
+const textEl = document.getElementById("text");
+const wStat = document.getElementById("wStat");
+const cStat = document.getElementById("cStat");
+const sStat = document.getElementById("sStat");
+const pStat = document.getElementById("pStat");
+const rStat = document.getElementById("rStat");
+
+function updateStats(){
+  const text = textEl.value;
+  const trimmed = text.trim();
+
+  const words = trimmed ? trimmed.split(/\s+/).length : 0;
+  const chars = text.length;
+  const sentences = trimmed ? (text.match(/[.!?]+/g) || []).length : 0;
+  const paragraphs = trimmed ? trimmed.split(/\n+/).filter(p=>p.trim().length).length : 0;
+  const read = words ? Math.max(1, Math.round(words/200)) : 0;
+
+  wStat.textContent = "Words: " + words;
+  cStat.textContent = "Characters: " + chars;
+  sStat.textContent = "Sentences: " + sentences;
+  pStat.textContent = "Paragraphs: " + paragraphs;
+  rStat.textContent = "Reading time: " + read + " min";
+}
+textEl.addEventListener("input", updateStats);
+
+function clearText(){
+  textEl.value = "";
+  updateStats();
+}
+function copyText(){
+  if(!textEl.value){return;}
+  navigator.clipboard.writeText(textEl.value).then(()=>{
+    alert("Text copied!");
+  }).catch(()=>alert("Copy failed, manually select text."));
+}
+updateStats();
+</script>
+</body>
+</html>
